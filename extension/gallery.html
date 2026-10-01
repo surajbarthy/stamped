@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Slop Stamp</title>
+    <link rel="stylesheet" href="gallery.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="brand">
+        <span class="seal" aria-hidden="true">AI</span>
+        <div>
+          <h1>Slop Stamp</h1>
+          <p>Private screenshots on this browser</p>
+        </div>
+      </div>
+      <div class="actions">
+        <a class="button" id="community-link" href="http://127.0.0.1:8787/community.html" target="_blank" rel="noreferrer">Community</a>
+        <button type="button" id="export" class="button">Export JSON</button>
+        <button type="button" id="delete-all" class="button danger">Delete all</button>
+      </div>
+    </header>
+
+    <section class="stats" aria-label="Gallery statistics">
+      <article>
+        <span id="stat-shots">0</span>
+        <p>Screenshots</p>
+      </article>
+      <article>
+        <span id="stat-stamps">0</span>
+        <p>Stamps</p>
+      </article>
+      <article>
+        <span id="stat-sites">0</span>
+        <p>Websites</p>
+      </article>
+    </section>
+
+    <p id="status" class="status" hidden></p>
+    <div id="grid" class="grid"></div>
+
+    <div id="modal" class="modal" hidden>
+      <div class="modal-backdrop" data-close="true"></div>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <img id="modal-image" alt="" />
+        <div class="modal-copy">
+          <h2 id="modal-title"></h2>
+          <p id="modal-url"></p>
+          <p id="modal-meta"></p>
+          <div class="modal-actions">
+            <button type="button" id="modal-community" class="button">Community</button>
+            <button type="button" id="modal-download" class="button">Download</button>
+            <button type="button" id="modal-share" class="button">Share</button>
+            <button type="button" id="modal-delete" class="button danger">Delete</button>
+            <button type="button" id="modal-close" class="button">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="gallery.js"></script>
+  </body>
+</html>

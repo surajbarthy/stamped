@@ -1,0 +1,296 @@
+:root {
+  --ink: #111;
+  --muted: #6b6b6b;
+  --line: #111;
+  --paper: #fff;
+  --stamp: #e10600;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--paper);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.011em;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: 18px 32px;
+  border-bottom: 1px solid var(--line);
+}
+
+.word {
+  color: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.links {
+  display: flex;
+  gap: 28px;
+}
+
+.links a {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.links a[aria-current="page"] {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+main {
+  padding: 0 32px 96px;
+}
+
+.index {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+h1,
+h2 {
+  margin: 0;
+  font-weight: 400;
+  letter-spacing: -0.045em;
+}
+
+h1 {
+  max-width: 9ch;
+  font-size: clamp(64px, 8.4vw, 120px);
+  line-height: 0.88;
+}
+
+h2 {
+  max-width: 12ch;
+  margin-top: 16px;
+  font-size: clamp(40px, 4.6vw, 68px);
+  line-height: 0.92;
+}
+
+.lead {
+  max-width: 28ch;
+  margin: 28px 0 0;
+  font-size: clamp(20px, 2vw, 28px);
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+}
+
+.hero,
+.frames,
+.props,
+.gallery-note {
+  padding-top: 36px;
+  border-bottom: 1px solid var(--line);
+}
+
+.hero {
+  padding-bottom: 56px;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(180px, 0.6fr);
+  gap: 48px;
+  align-items: end;
+  margin-top: 28px;
+}
+
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 28px;
+  align-items: center;
+  margin-top: 36px;
+}
+
+.cta p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+  letter-spacing: 0;
+}
+
+.chrome {
+  display: inline-block;
+  padding: 14px 18px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: #fff;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.hero-stamp {
+  justify-self: end;
+  display: grid;
+  width: min(220px, 42vw);
+  height: min(220px, 42vw);
+  place-items: center;
+  border: 1px solid var(--stamp);
+  border-radius: 50%;
+  color: var(--stamp);
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 0.95;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.hero-stamp span {
+  display: grid;
+  width: 68%;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid var(--stamp);
+  border-radius: 50%;
+}
+
+.frames {
+  padding-bottom: 48px;
+}
+
+.frame-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 28px;
+}
+
+figure {
+  margin: 0;
+}
+
+.frame {
+  display: grid;
+  min-height: 320px;
+  place-items: center;
+  border: 1px solid var(--line);
+  background: #f4f4f4;
+}
+
+.frame span,
+figcaption span {
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+figcaption {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  font-size: 14px;
+  letter-spacing: 0;
+}
+
+.props,
+.gallery-note {
+  padding-bottom: 8px;
+}
+
+.props ol {
+  margin: 36px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.props li {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 640px);
+  gap: 16px;
+  padding: 22px 0;
+  border-top: 1px solid var(--line);
+  font-size: 20px;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+
+.props li::before {
+  content: counter(step, decimal-leading-zero);
+  counter-increment: step;
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+
+.note-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  max-width: 920px;
+  margin-top: 32px;
+}
+
+.note-grid p {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.45;
+  letter-spacing: -0.02em;
+}
+
+.text-link {
+  display: inline-block;
+  margin: 32px 0 40px;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 800px) {
+  .nav,
+  main {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .hero-grid,
+  .frame-grid,
+  .note-grid,
+  .props li {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-stamp {
+    justify-self: start;
+  }
+
+  .frame {
+    min-height: 200px;
+  }
+}

@@ -1,0 +1,286 @@
+:root {
+  color-scheme: dark;
+  --ink: #1c1917;
+  --paper: #f7f4ee;
+  --stamp: #d63232;
+  --muted: #b7aea3;
+  --bg: #221f1b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(214, 50, 50, 0.16), transparent 32%),
+    var(--bg);
+  color: var(--paper);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: center;
+  padding: 28px 32px 8px;
+}
+
+.brand {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.seal {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  place-items: center;
+  border: 3px solid var(--stamp);
+  border-radius: 50%;
+  background: rgba(247, 244, 238, 0.08);
+  color: #ffd4d4;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  transform: rotate(-8deg);
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-family: "Iowan Old Style", Palatino, Georgia, serif;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.brand p,
+.shot figcaption p,
+#modal-url,
+#modal-meta {
+  color: var(--muted);
+}
+
+#modal-url {
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.button {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.button.danger {
+  background: transparent;
+  color: #ffd0d0;
+  box-shadow: inset 0 0 0 1px rgba(255, 208, 208, 0.45);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 180px));
+  gap: 12px;
+  padding: 20px 32px 8px;
+}
+
+.stats article {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(247, 244, 238, 0.06);
+}
+
+.stats span {
+  display: block;
+  font-family: "Iowan Old Style", Palatino, Georgia, serif;
+  font-size: 28px;
+}
+
+.stats p {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.status {
+  padding: 8px 32px 0;
+  color: var(--muted);
+}
+
+.empty {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
+  padding: 20px 32px 48px;
+}
+
+.shot {
+  position: relative;
+  margin: 0;
+  padding: 10px 10px 12px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--paper);
+  color: var(--ink);
+  text-align: left;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
+  cursor: pointer;
+  font: inherit;
+}
+
+.shot img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: #e7e1d8;
+}
+
+.shot figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+  padding: 10px 2px 0;
+}
+
+.shot strong {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shot-delete {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  border: 0;
+  border-radius: 999px;
+  padding: 6px 8px;
+  background: rgba(28, 25, 23, 0.82);
+  color: white;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(18, 16, 14, 0.78);
+}
+
+.modal-card {
+  position: relative;
+  z-index: 1;
+  width: min(960px, 100%);
+  overflow: hidden;
+  border-radius: 18px;
+  background: #2a2622;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+}
+
+.modal-card img {
+  display: block;
+  width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  background: #111;
+}
+
+.modal-copy {
+  display: grid;
+  gap: 6px;
+  padding: 16px 18px 18px;
+}
+
+.modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+a.button {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.shot-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 2px 0;
+}
+
+.shot-actions button {
+  border: 0;
+  border-radius: 999px;
+  padding: 5px 8px;
+  background: var(--ink);
+  color: var(--paper);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (max-width: 720px) {
+  .top,
+  .stats,
+  .grid,
+  .status {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .top {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+}
