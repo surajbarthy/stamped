@@ -3,29 +3,49 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>The wall — Slop Stamp</title>
+    <meta name="description" content="Pages people stamped as AI slop, with the time they stamped them." />
+    <meta name="color-scheme" content="dark" />
+    <title>The wall · Slop Stamp</title>
+    <link rel="preload" href="fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="community.css" />
   </head>
   <body>
+    <a class="skip" href="#grid">Skip to the pictures</a>
     <header class="nav">
       <a class="logo" href="index.html">Slop Stamp</a>
       <nav class="nav-links" aria-label="Site">
         <a href="index.html">The stamp</a>
         <a href="community.html" aria-current="page">The wall</a>
       </nav>
-      <button type="button" class="btn" id="randomize">Randomize</button>
     </header>
 
     <main>
-      <section class="hero">
-        <p class="eyebrow">Community</p>
+      <section class="intro">
         <h1>The wall</h1>
-        <p class="lead">A picture and a time.</p>
-        <p class="sub">Nothing else is on the card.</p>
-        <p id="note" class="note"></p>
+        <div class="intro-side">
+          <p>Pages people stamped as slop. Each one carries the time it was stamped, and nothing else.</p>
+          <p id="note" class="note"></p>
+          <button type="button" class="btn" id="shuffle">Shuffle</button>
+        </div>
       </section>
-      <div id="grid" class="wall"></div>
+
+      <div id="grid" class="wall" aria-busy="true"></div>
     </main>
+
+    <dialog id="viewer" class="viewer" aria-label="Stamped page">
+      <figure class="viewer-frame">
+        <img id="viewer-image" alt="" />
+        <figcaption>
+          <time id="viewer-time"></time>
+          <span id="viewer-count" class="viewer-count"></span>
+        </figcaption>
+      </figure>
+      <div class="viewer-controls">
+        <button type="button" class="btn btn-quiet" id="viewer-prev">Previous</button>
+        <button type="button" class="btn btn-quiet" id="viewer-next">Next</button>
+        <button type="button" class="btn btn-quiet" id="viewer-close">Close</button>
+      </div>
+    </dialog>
 
     <script src="community.js"></script>
   </body>
