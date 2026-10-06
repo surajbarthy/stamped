@@ -81,3 +81,8 @@
 .admin-toast.is-visible {
   opacity: 1;
 }
+
+.admin-login[hidden],
+#panel[hidden] {
+  display: none;
+}
