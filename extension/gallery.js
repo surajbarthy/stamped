@@ -15,8 +15,9 @@ const viewerUrl = document.querySelector("#viewer-url");
 const viewerMeta = document.querySelector("#viewer-meta");
 const viewerCount = document.querySelector("#viewer-count");
 const postButton = document.querySelector("#post");
-const postConfirm = document.querySelector("#post-confirm");
-const postYes = document.querySelector("#post-yes");
+const postAgree = document.querySelector("#post-agree");
+const postNote = document.querySelector("#post-note");
+const coverTools = document.querySelector("#cover-tools");
 const deleteButton = document.querySelector("#delete");
 const deleteConfirm = document.querySelector("#delete-confirm");
 const deleteQuestion = document.querySelector("#delete-question");
@@ -33,6 +34,7 @@ let shots = [];
 let openId = null;
 let toastTimer = null;
 const posting = new Set();
+const AGREED_KEY = "stamped:wall-rules-agreed";
 
 // Covers are boxes in 0..1 image coordinates, so they survive resizes.
 let covers = [];
@@ -142,25 +144,19 @@ function renderGrid() {
 }
 
 function resetConfirms() {
-  postConfirm.hidden = true;
   unpostConfirm.hidden = true;
   deleteConfirm.hidden = true;
   deleteButton.hidden = false;
-  stopCovering();
+  clearCovers();
 }
 
-// Cover-up editor: drag boxes over the picture before it is posted.
+// Cover-up editor: on any picture not yet posted, drag boxes over it to
+// black them out in the posted copy.
 
-function startCovering() {
-  covers = [];
-  coverCanvas.hidden = false;
-  placeCanvas();
-}
-
-function stopCovering() {
+function clearCovers() {
   covers = [];
   drag = null;
-  coverCanvas.hidden = true;
+  drawCovers();
 }
 
 function placeCanvas() {
@@ -235,6 +231,7 @@ coverUndo.addEventListener("click", () => {
   drawCovers();
 });
 new ResizeObserver(() => placeCanvas()).observe(stage);
+viewerImg.addEventListener("load", () => placeCanvas());
 
 function loadImage(src) {
   return new Promise((resolve, reject) => {
@@ -287,19 +284,20 @@ function renderViewer() {
   viewerCount.textContent = `${index + 1} of ${shots.length}`;
 
   const isPosting = posting.has(shot.id);
-  if (shot.sharedAt) {
+  const posted = Boolean(shot.sharedAt);
+  coverCanvas.hidden = posted;
+  coverTools.hidden = posted;
+  postNote.hidden = posted;
+  if (!posted) placeCanvas();
+  if (posted) {
     postButton.textContent = `Posted ${formatWhen(shot.sharedAt)}`;
     postButton.disabled = true;
-    postConfirm.hidden = true;
-    stopCovering();
   } else {
     postButton.textContent = isPosting ? "Posting…" : "Post to the wall";
-    postButton.disabled = isPosting;
+    postButton.disabled = isPosting || !postAgree.checked;
   }
-  postButton.hidden = !postConfirm.hidden || !unpostConfirm.hidden;
-  postYes.disabled = isPosting;
-  unpostButton.hidden = !shot.sharedAt || !shot.wallId || !unpostConfirm.hidden;
-  if (!shot.sharedAt) unpostConfirm.hidden = true;
+  unpostButton.hidden = !posted || !shot.wallId || !unpostConfirm.hidden;
+  if (!posted) unpostConfirm.hidden = true;
   deleteQuestion.textContent = shot.sharedAt
     ? "Delete this picture from the gallery? It stays on the wall, and you won't be able to remove it from here afterwards."
     : "Delete this picture from the gallery?";
@@ -373,8 +371,7 @@ async function postToWall(shot) {
     if (!response.ok) throw await errorFrom(response, "Couldn't post to the wall.");
     const result = await response.json();
     posting.delete(shot.id);
-    postConfirm.hidden = true;
-    stopCovering();
+    clearCovers();
     await updateRecord(shot.id, { sharedAt: Date.now(), wallId: result.id, wallDeleteToken: result.deleteToken });
     showToast(
       result.status === "pending"
@@ -498,16 +495,15 @@ document.querySelector("#delete-all-yes").addEventListener("click", async () => 
 });
 
 postButton.addEventListener("click", () => {
-  postConfirm.hidden = false;
-  postButton.hidden = true;
-  startCovering();
-  postYes.focus();
+  const shot = currentShot();
+  if (shot) void postToWall(shot);
 });
-document.querySelector("#post-no").addEventListener("click", () => {
-  postConfirm.hidden = true;
-  postButton.hidden = false;
-  stopCovering();
-  postButton.focus();
+postAgree.addEventListener("change", () => {
+  try {
+    if (postAgree.checked) localStorage.setItem(AGREED_KEY, "1");
+    else localStorage.removeItem(AGREED_KEY);
+  } catch {}
+  renderViewer();
 });
 unpostButton.addEventListener("click", () => {
   unpostConfirm.hidden = false;
@@ -522,10 +518,6 @@ document.querySelector("#unpost-no").addEventListener("click", () => {
 unpostYes.addEventListener("click", () => {
   const shot = currentShot();
   if (shot) void removeFromWall(shot);
-});
-postYes.addEventListener("click", () => {
-  const shot = currentShot();
-  if (shot) void postToWall(shot);
 });
 
 deleteButton.addEventListener("click", () => {
@@ -576,11 +568,13 @@ viewer.addEventListener("close", () => {
 });
 
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (area === "local" && changes[INDEX_KEY]) document.querySelector("#community-link").href = `${COMMUNITY_ORIGIN}/community.html`;
-
-void refresh();
+  if (area === "local" && changes[INDEX_KEY]) void refresh();
 });
 
 document.querySelector("#community-link").href = `${COMMUNITY_ORIGIN}/community.html`;
+document.querySelector("#rules-link").href = `${COMMUNITY_ORIGIN}/rules.html`;
+try {
+  postAgree.checked = localStorage.getItem(AGREED_KEY) === "1";
+} catch {}
 
 void refresh();

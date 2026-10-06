@@ -15,3 +15,16 @@
 .prose p {
   margin: 0 0 12px;
 }
+
+.prose .rules {
+  margin: 0 0 12px;
+  padding-left: 1.4em;
+}
+
+.prose .rules li {
+  margin-bottom: 6px;
+}
+
+.prose .rules li::marker {
+  color: var(--stamp);
+}

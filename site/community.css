@@ -236,6 +236,14 @@ h2 {
   font-size: 15px;
 }
 
+.wall-rules {
+  margin: 12px 0 0;
+  padding: 8px 12px;
+  border: 2px solid var(--ink);
+  background: var(--note, #ffff99);
+  font-size: 15px;
+}
+
 .note:empty {
   display: none;
 }

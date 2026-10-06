@@ -65,18 +65,15 @@
           <p id="viewer-meta" class="viewer-meta"></p>
 
           <div class="viewer-actions">
-            <div id="post-area">
-              <button type="button" class="btn btn-primary btn-wide" id="post">Post to the wall</button>
-              <div class="confirm" id="post-confirm" hidden>
-                <p><strong>Cover anything private first.</strong> Drag across a name, an email, an inbox, or a face and it gets blacked out in the posted picture. Your saved copy stays as it is.</p>
-                <p id="cover-count" class="cover-count">Nothing covered yet.</p>
-                <button type="button" class="link-btn" id="cover-undo" disabled>Undo last cover</button>
-                <p>The wall gets this picture and the time, nothing else. It shows up after a person checks it, and you can remove it from here later.</p>
-                <div class="confirm-row">
-                  <button type="button" class="btn btn-primary" id="post-yes">Post it</button>
-                  <button type="button" class="btn" id="post-no">Cancel</button>
-                </div>
+            <div id="post-area" class="post-area">
+              <div id="cover-tools" class="cover-tools">
+                <p class="cover-hint">Drag on the picture to black out a name, an email or a face. Only the posted copy is covered.</p>
+                <p class="cover-line"><span id="cover-count" class="cover-count">Nothing covered yet.</span> <button type="button" class="link-btn" id="cover-undo" disabled>Undo</button></p>
+                <label class="post-agree" id="post-agree-row"><input type="checkbox" id="post-agree" /> <span>No private people or their info is in this, and my stamp is my opinion. <a id="rules-link" href="#" target="_blank" rel="noreferrer">Wall rules</a></span></label>
               </div>
+              <button type="button" class="btn btn-primary btn-wide" id="post">Post to the wall</button>
+              <p class="post-note" id="post-note">Only the picture and the time are sent. A person checks it before it shows.</p>
+              <button type="button" class="link-btn" id="unpost" hidden>Remove from the wall</button>
               <div class="confirm" id="unpost-confirm" hidden>
                 <p>Take this picture off the wall? It's deleted from the server. Your saved copy stays here.</p>
                 <div class="confirm-row">
@@ -84,7 +81,6 @@
                   <button type="button" class="btn" id="unpost-no">Keep it up</button>
                 </div>
               </div>
-              <button type="button" class="link-btn" id="unpost" hidden>Remove from the wall</button>
             </div>
             <div class="confirm-row">
               <button type="button" class="btn" id="download">Download</button>

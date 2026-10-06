@@ -326,8 +326,66 @@ h1 {
   flex: 1;
 }
 
+/* Posting: cover tools, the rules tick, and one button that stays put. */
+
+.post-area {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 2px solid var(--ink);
+  background: var(--note);
+}
+
+.post-area [hidden] {
+  display: none;
+}
+
+.cover-tools {
+  display: grid;
+  gap: 8px;
+}
+
+.cover-hint,
+.post-note {
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.post-note {
+  color: var(--muted);
+}
+
+.cover-line {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  font-size: 15px;
+}
+
 .cover-count {
   font-weight: 700;
+}
+
+.post-agree {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 15px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.post-agree input {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 2px 0 0;
+  accent-color: var(--ink);
+}
+
+.post-area .confirm {
+  margin-top: 0;
+  background: var(--sheet);
 }
 
 .cover-canvas {
