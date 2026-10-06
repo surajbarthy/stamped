@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { deflateSync } from "node:zlib";
 import { inspectImage, stripMetadata } from "../src/image.js";
 
-const jpeg = new Uint8Array(readFileSync(new URL("../../site/img/stamp-mode.jpg", import.meta.url)));
+const jpeg = new Uint8Array(readFileSync(new URL("./fixtures/sample.jpg", import.meta.url)));
 
 function withExif(bytes) {
   const payload = new TextEncoder().encode("Exif\0\0GPS 40.7128 N, 74.0060 W");

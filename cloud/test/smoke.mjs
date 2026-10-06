@@ -6,7 +6,7 @@ import { readFileSync } from "node:fs";
 
 const base = process.argv[2] || "http://127.0.0.1:8787";
 const adminKey = process.argv[3] || "local-admin-key";
-const jpeg = readFileSync(new URL("../../site/img/stamp-mode.jpg", import.meta.url));
+const jpeg = readFileSync(new URL("./fixtures/sample.jpg", import.meta.url));
 const image = `data:image/jpeg;base64,${jpeg.toString("base64")}`;
 const admin = { Authorization: `Bearer ${adminKey}`, "Content-Type": "application/json" };
 

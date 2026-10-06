@@ -42,46 +42,6 @@
   margin-top: 8px;
 }
 
-/* The stamp, as it lands on a page. */
-.hero-mark {
-  width: 190px;
-  transform: rotate(-12deg);
-}
-
-.hero-stamp {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.shots {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
-}
-
-.shots figure {
-  margin: 0;
-}
-
-.shots img {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 16 / 10;
-  object-fit: cover;
-  object-position: top center;
-  border: 2px solid var(--ink);
-  background: var(--paper);
-}
-
-.shots figcaption {
-  padding: 6px 10px;
-  border: 2px solid var(--ink);
-  border-top: 0;
-  font-size: 15px;
-  font-weight: 700;
-}
 
 .home-columns {
   display: grid;
@@ -133,12 +93,137 @@
     padding: 20px 16px 24px;
   }
 
-  .hero-mark {
-    display: none;
+  .slop-demo {
+    justify-self: center;
+    margin-top: 8px;
   }
 
-  .shots,
   .home-columns {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Hero: a made-up slop post, and the stamp landing on it on a loop. */
+.slop-demo {
+  position: relative;
+  justify-self: end;
+  width: min(300px, 100%);
+  margin: 0 12px 0 0;
+}
+
+.slop-post {
+  padding: 10px 10px 12px;
+  border: 2px solid var(--ink);
+  background: #fff;
+  box-shadow: 4px 4px 0 var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  transform: rotate(2deg);
+}
+
+.slop-art {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 30% 30%, #ff9de2 0, transparent 45%),
+    radial-gradient(circle at 75% 70%, #4ff0ff 0, transparent 50%),
+    linear-gradient(135deg, #3b1d8f, #8a2be2 45%, #ff7a3d);
+}
+
+.slop-orb {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 42%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 9px, rgba(255, 255, 255, 0.55) 9px 10px),
+    repeating-linear-gradient(0deg, transparent 0 9px, rgba(255, 255, 255, 0.55) 9px 10px),
+    radial-gradient(circle, #e0fbff, #38c8ff 55%, #2a5bff);
+  box-shadow: 0 0 24px 8px rgba(120, 230, 255, 0.85);
+  transform: translate(-50%, -50%);
+}
+
+.slop-spark {
+  position: absolute;
+  color: #fff;
+  text-shadow: 0 0 8px #fff;
+}
+
+.slop-spark.s1 { left: 12%; top: 14%; font-size: 22px; }
+.slop-spark.s2 { right: 12%; top: 22%; font-size: 16px; }
+.slop-spark.s3 { left: 22%; bottom: 12%; font-size: 18px; }
+
+.slop-title {
+  margin: 10px 0 4px;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.slop-body {
+  margin: 0 0 6px;
+  color: #666;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.slop-meta {
+  margin: 0;
+  color: #888;
+  font-size: 12px;
+}
+
+.slop-stamp {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: 46%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  animation: slop-stamp 4.5s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+}
+
+.slop-stamp-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.slop-saved {
+  position: absolute;
+  right: -8px;
+  bottom: -14px;
+  padding: 3px 10px;
+  border: 2px solid var(--ink);
+  background: var(--note, #ffff99);
+  font-size: 15px;
+  font-weight: 700;
+  animation: slop-saved 4.5s ease-out infinite;
+}
+
+@keyframes slop-stamp {
+  0%, 18% { opacity: 0; transform: translate(-50%, -50%) scale(0.35) rotate(-18deg); }
+  19% { opacity: 1; transform: translate(-50%, -50%) scale(0.35) rotate(-18deg); }
+  26% { transform: translate(-50%, -50%) scale(1.08) rotate(4deg); }
+  31%, 88% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(-6deg); }
+  96%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(1) rotate(-6deg); }
+}
+
+@keyframes slop-saved {
+  0%, 36% { opacity: 0; transform: translateY(6px); }
+  42%, 86% { opacity: 1; transform: translateY(0); }
+  94%, 100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slop-stamp,
+  .slop-saved {
+    animation: none;
+  }
+
+  .slop-stamp {
+    transform: translate(-50%, -50%) rotate(-6deg);
   }
 }
