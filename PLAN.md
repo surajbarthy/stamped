@@ -50,6 +50,9 @@ todos:
   - id: permissions
     content: Drop all-sites access and the always-on content script; rely on activeTab from the icon click
     status: completed
+  - id: one-look
+    content: Restyle the home page in the wall's Comic Sans window style and add a Plain font switch to every page and the gallery
+    status: completed
   - id: privacy-listing
     content: Add a privacy policy page and the Chrome Web Store listing text
     status: completed

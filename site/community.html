@@ -7,6 +7,7 @@
     <meta name="color-scheme" content="light" />
     <title>The wall · Slop Stamp</title>
     <link rel="preload" href="fonts/comic-neue-700.woff2" as="font" type="font/woff2" crossorigin />
+    <script src="font.js"></script>
     <link rel="stylesheet" href="community.css" />
   </head>
   <body>
@@ -14,10 +15,13 @@
     <div class="page">
       <header class="masthead">
         <a class="logo" href="index.html">Slop Stamp</a>
-        <nav class="nav-links" aria-label="Site">
-          <a href="index.html">The stamp</a>
-          <a href="community.html" aria-current="page">The wall</a>
-        </nav>
+        <div class="masthead-tools">
+          <nav class="nav-links" aria-label="Site">
+            <a href="index.html">The stamp</a>
+            <a href="community.html" aria-current="page">The wall</a>
+          </nav>
+          <button type="button" class="font-toggle" data-font-toggle aria-pressed="false">Plain font</button>
+        </div>
       </header>
 
       <main class="window">

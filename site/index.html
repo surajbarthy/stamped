@@ -3,62 +3,101 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Slop Stamp is a Chrome extension. Stamp AI slop where you see it, keep a private gallery, and post the best ones to the wall." />
+    <meta name="color-scheme" content="light" />
     <title>Slop Stamp</title>
-    <link rel="stylesheet" href="site.css" />
+    <script src="font.js"></script>
+    <link rel="preload" href="fonts/comic-neue-700.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="community.css" />
+    <link rel="stylesheet" href="home.css" />
   </head>
   <body>
-    <header class="nav">
-      <a class="logo" href="index.html">Slop Stamp</a>
-      <nav class="nav-links" aria-label="Site">
-        <a href="index.html" aria-current="page">The stamp</a>
-        <a href="community.html">The wall</a>
-      </nav>
-      <a class="btn" href="https://chromewebstore.google.com/">Add to Chrome</a>
-    </header>
-
-    <main>
-      <section class="hero">
-        <p class="eyebrow">A Chrome extension</p>
-        <h1>Don't like AI slop?</h1>
-        <p class="lead">Show it with a stamp.</p>
-        <p class="sub">Stamp it anywhere you see it now.</p>
-        <p class="note">The store link will point at the listing once that URL is ready.</p>
-      </section>
-
-      <section class="shots" aria-label="A stamped page and the gallery">
-        <figure>
-          <img src="img/stamp-mode.jpg" alt="A page with an AI slop stamp on it" />
-          <figcaption>Stamp mode, on a page</figcaption>
-        </figure>
-        <figure>
-          <img src="img/saved-picture.jpg" alt="Another stamped page" />
-          <figcaption>The picture that gets saved</figcaption>
-        </figure>
-      </section>
-
-      <section class="moves">
-        <h2>Five things it does.</h2>
-        <ol>
-          <li>Click the icon. Click the slop. A red stamp lands on it and says AI slop.</li>
-          <li>Press Esc, or click the icon again, and stamp mode closes.</li>
-          <li>Every stamp saves a picture of the page, with the mark in it.</li>
-          <li>Thumbnails sit in the bar. Delete one if you don't want to keep it.</li>
-          <li>Turn saving off when you only want to mark the page.</li>
-        </ol>
-      </section>
-
-      <section class="close">
-        <div>
-          <h2>Yours, until you share it.</h2>
-          <p>Saved stamps live on this browser. From the gallery you can download a shot, hand it to the share sheet, or send it to the community.</p>
-          <p>A community post is the picture and the time. No name, no caption, no link back to the page or to you.</p>
+    <a class="skip" href="#main">Skip to the page</a>
+    <div class="page">
+      <header class="masthead">
+        <a class="logo" href="index.html">Slop Stamp</a>
+        <div class="masthead-tools">
+          <nav class="nav-links" aria-label="Site">
+            <a href="index.html" aria-current="page">The stamp</a>
+            <a href="community.html">The wall</a>
+          </nav>
+          <button type="button" class="font-toggle" data-font-toggle aria-pressed="false">Plain font</button>
         </div>
-        <a class="btn" href="community.html">See the wall</a>
-      </section>
-    </main>
+      </header>
 
-    <footer class="footer">
-      <a href="privacy.html">Privacy</a>
-    </footer>
+      <main id="main" class="home">
+        <section class="window hero" aria-labelledby="hero-title">
+          <div class="titlebar">
+            <span>A Chrome extension</span>
+            <span class="tally">Free</span>
+          </div>
+          <div class="window-body hero-body">
+            <div class="hero-copy">
+              <h1 id="hero-title">Don't like AI slop?</h1>
+              <p class="hero-lead">Show it with a stamp.</p>
+              <p>Click the icon, click the slop, and a red mark lands right on it. Every stamp keeps a picture of the page.</p>
+              <div class="hero-actions">
+                <a class="btn btn-primary" id="add-to-chrome" href="https://chromewebstore.google.com/">Add to Chrome</a>
+                <a class="btn" href="community.html">See the wall</a>
+              </div>
+            </div>
+            <div class="hero-mark" aria-hidden="true">
+              <span>AI</span>
+              <span>slop</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="window" aria-labelledby="shots-title">
+          <div class="titlebar">
+            <h2 id="shots-title">What it looks like</h2>
+          </div>
+          <div class="window-body shots">
+            <figure>
+              <img src="img/stamp-mode.jpg" alt="A page with two AI slop stamps on it" width="3456" height="1994" />
+              <figcaption>Stamp mode, on a page</figcaption>
+            </figure>
+            <figure>
+              <img src="img/saved-picture.jpg" alt="An image search page with AI slop stamps, saved as a picture" width="3456" height="1994" loading="lazy" />
+              <figcaption>The picture that gets saved</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <div class="home-columns">
+          <section class="window" aria-labelledby="moves-title">
+            <div class="titlebar">
+              <h2 id="moves-title">Five things it does</h2>
+            </div>
+            <div class="window-body">
+              <ol class="moves">
+                <li>Click the icon. Click the slop. A red stamp lands on it and says AI slop.</li>
+                <li>Press Esc, or click the icon again, and stamp mode closes.</li>
+                <li>Every stamp saves a picture of the page, with the mark in it.</li>
+                <li>Thumbnails sit in the bar. Delete one if you don't want to keep it.</li>
+                <li>Turn saving off when you only want to mark the page.</li>
+              </ol>
+            </div>
+          </section>
+
+          <section class="window" aria-labelledby="share-title">
+            <div class="titlebar">
+              <h2 id="share-title">Yours, until you share it</h2>
+            </div>
+            <div class="window-body share">
+              <p>Saved stamps live on this browser. From the gallery you can download a picture, share it, or post it to the wall.</p>
+              <p>Before a picture goes up, black out anything private in it. The wall gets the picture and the time. No name, no caption, no link back to the page or to you.</p>
+              <p>You can take a post down again from your gallery.</p>
+              <a class="btn" href="community.html">See the wall</a>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <footer class="footer">
+        <p>No accounts. No names. A picture and a time.</p>
+        <p><a href="community.html">The wall</a> · <a href="privacy.html">Privacy</a></p>
+      </footer>
+    </div>
   </body>
 </html>

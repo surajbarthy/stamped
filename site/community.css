@@ -91,12 +91,48 @@ a:hover {
   padding: 28px 24px 40px;
 }
 
+/* Plain font, chosen with the switch at the top of the page. */
+:root[data-font="plain"] {
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.font-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 2px solid var(--ink);
+  background: var(--sheet);
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.font-toggle::before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--ink);
+  background: var(--sheet);
+}
+
+.font-toggle[aria-pressed="true"]::before {
+  background: var(--ink);
+  box-shadow: inset 0 0 0 2px var(--sheet);
+}
+
+.font-toggle:hover {
+  background: var(--note, #ffff99);
+}
+
 /* Masthead */
 
 .masthead {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 12px 24px;
   padding: 0 4px 18px;
@@ -112,6 +148,13 @@ a:hover {
 
 .logo:hover {
   color: var(--stamp);
+}
+
+.masthead-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
 }
 
 .nav-links {
@@ -220,6 +263,30 @@ h2 {
 .btn:disabled {
   color: #8a8a8a;
   cursor: default;
+}
+
+a.btn,
+a.btn:visited {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.btn-primary,
+a.btn-primary,
+a.btn-primary:visited {
+  border-color: #7d7d7d #000 #000 #7d7d7d;
+  background: var(--ink);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #333;
+  color: #fff;
+}
+
+.btn-primary:active {
+  border-color: #000 #7d7d7d #7d7d7d #000;
+  background: #000;
 }
 
 .btn-small {
