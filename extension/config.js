@@ -1,3 +1,3 @@
-// Where the wall lives. `npx wrangler dev` in cloud/ serves it on this address.
-// Before publishing, set this to your public address, like "https://stamp.example.com".
-const COMMUNITY_ORIGIN = "http://127.0.0.1:8787";
+// Where the wall lives. For local testing against `npm run dev` in cloud/,
+// change this to "http://127.0.0.1:8787".
+const COMMUNITY_ORIGIN = "https://slopstamp.xyz";

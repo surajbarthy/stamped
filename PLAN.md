@@ -127,7 +127,7 @@ Cloud, under [cloud/](cloud/):
 ## Still open
 
 - Add to Chrome still points at the Chrome Web Store home. Replace it when the listing URL exists.
-- `COMMUNITY_ORIGIN` in `extension/config.js` is `http://127.0.0.1:8787`, the local Worker. Replace it once the wall is deployed (see `cloud/DEPLOY.md`).
+- `COMMUNITY_ORIGIN` in `extension/config.js` is `https://slopstamp.xyz`. Point it at `http://127.0.0.1:8787` to test against the local Worker.
 - Stamping after the activeTab change needs a manual check in Chrome: click the icon, stamp a few times, confirm each picture saves.
 - After extension code changes, reload the unpacked extension at `chrome://extensions` and refresh open tabs.
 - Stamps are not redrawn after refresh. That stays out of scope.
