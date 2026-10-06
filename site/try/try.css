@@ -69,6 +69,7 @@ a {
   font: inherit;
   font-size: 14px;
   font-weight: 600;
+  text-decoration: none;
   cursor: pointer;
 }
 
@@ -132,19 +133,29 @@ h1 {
   font-size: 14px;
 }
 
+.shots,
 .wall {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
   padding: 36px 32px 88px;
 }
 
+.shots {
+  grid-template-columns: minmax(0, 720px);
+}
+
+.wall {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.shots figure,
 .wall figure {
   margin: 0;
   border: 1px solid var(--line);
   background: var(--card);
 }
 
+.shots img,
 .wall img {
   display: block;
   width: 100%;
@@ -154,6 +165,7 @@ h1 {
   background: #111;
 }
 
+.shots figcaption,
 .wall time {
   display: block;
   padding: 12px 14px 14px;
@@ -181,6 +193,7 @@ h1 {
   }
 
   .hero,
+  .shots,
   .wall {
     padding-right: 16px;
     padding-left: 16px;

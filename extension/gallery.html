@@ -3,42 +3,48 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Slop Stamp</title>
+    <title>Gallery — Slop Stamp</title>
     <link rel="stylesheet" href="gallery.css" />
   </head>
   <body>
-    <header class="top">
-      <div class="brand">
-        <span class="seal" aria-hidden="true">AI</span>
-        <div>
-          <h1>Slop Stamp</h1>
-          <p>Private screenshots on this browser</p>
-        </div>
+    <header class="nav">
+      <div class="nav-brand">
+        <p class="logo">Slop Stamp</p>
+        <p class="nav-note">On this browser</p>
       </div>
       <div class="actions">
-        <a class="button" id="community-link" href="http://127.0.0.1:8787/community.html" target="_blank" rel="noreferrer">Community</a>
-        <button type="button" id="export" class="button">Export JSON</button>
-        <button type="button" id="delete-all" class="button danger">Delete all</button>
+        <a class="btn" id="community-link" href="http://127.0.0.1:8787/community.html" target="_blank" rel="noreferrer">Community</a>
+        <button type="button" id="export" class="btn btn-ghost">Export</button>
+        <button type="button" id="delete-all" class="btn btn-ghost">Delete all</button>
       </div>
     </header>
 
-    <section class="stats" aria-label="Gallery statistics">
-      <article>
-        <span id="stat-shots">0</span>
-        <p>Screenshots</p>
-      </article>
-      <article>
-        <span id="stat-stamps">0</span>
-        <p>Stamps</p>
-      </article>
-      <article>
-        <span id="stat-sites">0</span>
-        <p>Websites</p>
-      </article>
-    </section>
+    <main>
+      <section class="hero">
+        <p class="eyebrow">Gallery</p>
+        <h1>Yours, until you share it.</h1>
+        <p class="lead">Saved stamps live on this browser.</p>
+        <p class="sub">The wall only gets a picture and a time.</p>
+      </section>
 
-    <p id="status" class="status" hidden></p>
-    <div id="grid" class="grid"></div>
+      <section class="stats" aria-label="Gallery statistics">
+        <article>
+          <span id="stat-shots">0</span>
+          <p>Screenshots</p>
+        </article>
+        <article>
+          <span id="stat-stamps">0</span>
+          <p>Stamps</p>
+        </article>
+        <article>
+          <span id="stat-sites">0</span>
+          <p>Websites</p>
+        </article>
+      </section>
+
+      <p id="status" class="status" hidden></p>
+      <div id="grid" class="grid"></div>
+    </main>
 
     <div id="modal" class="modal" hidden>
       <div class="modal-backdrop" data-close="true"></div>
@@ -49,11 +55,11 @@
           <p id="modal-url"></p>
           <p id="modal-meta"></p>
           <div class="modal-actions">
-            <button type="button" id="modal-community" class="button">Community</button>
-            <button type="button" id="modal-download" class="button">Download</button>
-            <button type="button" id="modal-share" class="button">Share</button>
-            <button type="button" id="modal-delete" class="button danger">Delete</button>
-            <button type="button" id="modal-close" class="button">Close</button>
+            <button type="button" id="modal-community" class="btn">Community</button>
+            <button type="button" id="modal-download" class="btn btn-ghost">Download</button>
+            <button type="button" id="modal-share" class="btn btn-ghost">Share</button>
+            <button type="button" id="modal-delete" class="btn btn-danger">Delete</button>
+            <button type="button" id="modal-close" class="btn btn-ghost">Close</button>
           </div>
         </div>
       </div>

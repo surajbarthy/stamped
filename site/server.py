@@ -168,6 +168,12 @@ class Handler(BaseHTTPRequestHandler):
         if path in ("/community", "/community.html"):
             self._send_file(ROOT / "community.html", "text/html; charset=utf-8")
             return
+        if path in ("/try", "/try/"):
+            self._send_file(ROOT / "try" / "index.html", "text/html; charset=utf-8")
+            return
+        if path in ("/try/wall", "/try/wall/"):
+            self._send_file(ROOT / "try" / "wall.html", "text/html; charset=utf-8")
+            return
         relative = path.lstrip("/")
         file_path = (ROOT / relative).resolve()
         if (ROOT not in file_path.parents and file_path != ROOT) or not file_path.is_file():
