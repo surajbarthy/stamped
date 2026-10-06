@@ -11,7 +11,7 @@
     <div class="page">
       <header class="masthead">
         <p class="logo">Slop Stamp</p>
-        <a id="community-link" href="http://127.0.0.1:8787/community.html" target="_blank" rel="noreferrer">See the wall</a>
+        <a id="community-link" href="#" target="_blank" rel="noreferrer">See the wall</a>
       </header>
 
       <main class="window">
@@ -50,8 +50,9 @@
         <button type="button" class="btn btn-small" id="viewer-close">Close</button>
       </div>
       <div class="viewer-body">
-        <div class="viewer-image">
+        <div class="viewer-image" id="viewer-stage">
           <img id="viewer-img" alt="" />
+          <canvas id="cover-canvas" class="cover-canvas" hidden></canvas>
         </div>
         <aside class="viewer-panel">
           <h2 id="viewer-title"></h2>
@@ -62,12 +63,23 @@
             <div id="post-area">
               <button type="button" class="btn btn-primary btn-wide" id="post">Post to the wall</button>
               <div class="confirm" id="post-confirm" hidden>
-                <p>Anyone who opens the wall will see this picture and the time. The page address and title stay here. You can't take a post back from the gallery.</p>
+                <p><strong>Cover anything private first.</strong> Drag across a name, an email, an inbox, or a face and it gets blacked out in the posted picture. Your saved copy stays as it is.</p>
+                <p id="cover-count" class="cover-count">Nothing covered yet.</p>
+                <button type="button" class="link-btn" id="cover-undo" disabled>Undo last cover</button>
+                <p>The wall gets this picture and the time, nothing else. It shows up after a person checks it, and you can remove it from here later.</p>
                 <div class="confirm-row">
                   <button type="button" class="btn btn-primary" id="post-yes">Post it</button>
                   <button type="button" class="btn" id="post-no">Cancel</button>
                 </div>
               </div>
+              <div class="confirm" id="unpost-confirm" hidden>
+                <p>Take this picture off the wall? It's deleted from the server. Your saved copy stays here.</p>
+                <div class="confirm-row">
+                  <button type="button" class="btn btn-danger" id="unpost-yes">Remove it</button>
+                  <button type="button" class="btn" id="unpost-no">Keep it up</button>
+                </div>
+              </div>
+              <button type="button" class="link-btn" id="unpost" hidden>Remove from the wall</button>
             </div>
             <div class="confirm-row">
               <button type="button" class="btn" id="download">Download</button>
@@ -76,7 +88,7 @@
             <div id="delete-area">
               <button type="button" class="link-btn" id="delete">Delete this picture</button>
               <div class="confirm" id="delete-confirm" hidden>
-                <p>Delete this picture from the gallery?</p>
+                <p id="delete-question">Delete this picture from the gallery?</p>
                 <div class="confirm-row">
                   <button type="button" class="btn btn-danger" id="delete-yes">Delete</button>
                   <button type="button" class="btn" id="delete-no">Keep it</button>
@@ -95,6 +107,7 @@
 
     <div class="statusbar" id="toast" role="status" aria-live="polite"></div>
 
+    <script src="config.js"></script>
     <script src="gallery.js"></script>
   </body>
 </html>

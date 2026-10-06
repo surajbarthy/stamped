@@ -42,7 +42,13 @@ async function saveCapture(tab, stampCount, pageUrl, pageTitle) {
   try {
     dataUrl = await chrome.tabs.captureVisibleTab(tab.windowId, options);
   } catch {
-    dataUrl = await chrome.tabs.captureVisibleTab(options);
+    try {
+      dataUrl = await chrome.tabs.captureVisibleTab(options);
+    } catch {
+      // The icon click grants access to this tab until it navigates away, so a
+      // failure here usually means the page changed under stamp mode.
+      throw new Error("Click the Slop Stamp icon again to keep saving here.");
+    }
   }
   const count = Number.isFinite(stampCount) ? Math.max(0, Math.floor(stampCount)) : 0;
   const url = pageUrl || tab.url || "";

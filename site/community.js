@@ -6,10 +6,12 @@ const viewerImage = document.querySelector("#viewer-image");
 const viewerTime = document.querySelector("#viewer-time");
 const viewerCount = document.querySelector("#viewer-count");
 const tally = document.querySelector("#tally");
+const reportButton = document.querySelector("#viewer-report");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 let stamps = [];
 let openIndex = -1;
+const reported = new Set();
 
 function formatWhen(timestamp) {
   return new Date(timestamp).toLocaleString([], {
@@ -96,6 +98,24 @@ function showInViewer(index) {
   viewerTime.dateTime = new Date(stamp.createdAt).toISOString();
   viewerTime.textContent = formatWhen(stamp.createdAt);
   viewerCount.textContent = `${openIndex + 1} of ${stamps.length}${isSample(stamp) ? " (sample)" : ""}`;
+  reportButton.hidden = isSample(stamp);
+  reportButton.disabled = reported.has(stamp.id);
+  reportButton.textContent = reported.has(stamp.id) ? "Reported. Thanks." : "Report this picture";
+}
+
+async function reportOpen() {
+  const stamp = stamps[openIndex];
+  if (!stamp || reported.has(stamp.id)) return;
+  reportButton.disabled = true;
+  try {
+    const response = await fetch(`/api/stamps/${encodeURIComponent(stamp.id)}/report`, { method: "POST" });
+    if (!response.ok) throw new Error();
+    reported.add(stamp.id);
+    reportButton.textContent = "Reported. Thanks.";
+  } catch {
+    reportButton.disabled = false;
+    reportButton.textContent = "Couldn't send that. Try again.";
+  }
 }
 
 function openViewer(index) {
@@ -136,7 +156,7 @@ function retryButton() {
 function start() {
   return load().catch(() => {
     grid.setAttribute("aria-busy", "false");
-    renderMessage("The wall didn't load. The local server may not be running.", retryButton());
+    renderMessage("The wall didn't load. Check your connection and try again.", retryButton());
   });
 }
 
@@ -151,6 +171,7 @@ shuffleButton.addEventListener("click", () => {
 
 document.querySelector("#viewer-prev").addEventListener("click", () => showInViewer(openIndex - 1));
 document.querySelector("#viewer-next").addEventListener("click", () => showInViewer(openIndex + 1));
+reportButton.addEventListener("click", () => void reportOpen());
 document.querySelector("#viewer-close").addEventListener("click", () => viewer.close());
 viewer.addEventListener("click", (event) => {
   if (event.target === viewer) viewer.close();

@@ -213,6 +213,12 @@ h2 {
   border-top: 1px solid var(--line);
 }
 
+.footer {
+  margin: -56px 32px 40px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
 @media (max-width: 800px) {
   .nav {
     flex-wrap: wrap;
@@ -238,6 +244,11 @@ h2 {
 
   .close {
     display: grid;
+    margin-right: 16px;
+    margin-left: 16px;
+  }
+
+  .footer {
     margin-right: 16px;
     margin-left: 16px;
   }

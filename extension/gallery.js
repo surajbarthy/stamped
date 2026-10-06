@@ -1,5 +1,6 @@
 const INDEX_KEY = "stamped:index";
-const COMMUNITY_ORIGIN = "http://127.0.0.1:8787";
+// COMMUNITY_ORIGIN comes from config.js.
+const MAX_POST_CHARS = 5_200_000;
 
 const grid = document.querySelector("#grid");
 const summary = document.querySelector("#summary");
@@ -18,12 +19,24 @@ const postConfirm = document.querySelector("#post-confirm");
 const postYes = document.querySelector("#post-yes");
 const deleteButton = document.querySelector("#delete");
 const deleteConfirm = document.querySelector("#delete-confirm");
+const deleteQuestion = document.querySelector("#delete-question");
+const unpostButton = document.querySelector("#unpost");
+const unpostConfirm = document.querySelector("#unpost-confirm");
+const unpostYes = document.querySelector("#unpost-yes");
+const stage = document.querySelector("#viewer-stage");
+const coverCanvas = document.querySelector("#cover-canvas");
+const coverCount = document.querySelector("#cover-count");
+const coverUndo = document.querySelector("#cover-undo");
 const toast = document.querySelector("#toast");
 
 let shots = [];
 let openId = null;
 let toastTimer = null;
 const posting = new Set();
+
+// Covers are boxes in 0..1 image coordinates, so they survive resizes.
+let covers = [];
+let drag = null;
 
 function imageKey(id) {
   return `stamped:shot:${id}`;
@@ -130,8 +143,133 @@ function renderGrid() {
 
 function resetConfirms() {
   postConfirm.hidden = true;
+  unpostConfirm.hidden = true;
   deleteConfirm.hidden = true;
   deleteButton.hidden = false;
+  stopCovering();
+}
+
+// Cover-up editor: drag boxes over the picture before it is posted.
+
+function startCovering() {
+  covers = [];
+  coverCanvas.hidden = false;
+  placeCanvas();
+}
+
+function stopCovering() {
+  covers = [];
+  drag = null;
+  coverCanvas.hidden = true;
+}
+
+function placeCanvas() {
+  if (coverCanvas.hidden) return;
+  const box = viewerImg.getBoundingClientRect();
+  const host = stage.getBoundingClientRect();
+  const ratio = window.devicePixelRatio || 1;
+  coverCanvas.style.left = `${box.left - host.left}px`;
+  coverCanvas.style.top = `${box.top - host.top}px`;
+  coverCanvas.style.width = `${box.width}px`;
+  coverCanvas.style.height = `${box.height}px`;
+  coverCanvas.width = Math.round(box.width * ratio);
+  coverCanvas.height = Math.round(box.height * ratio);
+  drawCovers();
+}
+
+function normalizedBox(a, b) {
+  const x = Math.max(0, Math.min(a.x, b.x));
+  const y = Math.max(0, Math.min(a.y, b.y));
+  return { x, y, w: Math.min(1, Math.max(a.x, b.x)) - x, h: Math.min(1, Math.max(a.y, b.y)) - y };
+}
+
+function drawCovers() {
+  const context = coverCanvas.getContext("2d");
+  const { width, height } = coverCanvas;
+  context.clearRect(0, 0, width, height);
+  const boxes = drag ? [...covers, normalizedBox(drag.from, drag.to)] : covers;
+  for (const box of boxes) {
+    context.fillStyle = "#111111";
+    context.fillRect(box.x * width, box.y * height, box.w * width, box.h * height);
+    context.strokeStyle = "#e10600";
+    context.lineWidth = 2 * (window.devicePixelRatio || 1);
+    context.strokeRect(box.x * width, box.y * height, box.w * width, box.h * height);
+  }
+  coverCount.textContent = covers.length === 0 ? "Nothing covered yet." : `${plural(covers.length, "spot")} covered.`;
+  coverUndo.disabled = covers.length === 0;
+}
+
+function pointFrom(event) {
+  const box = coverCanvas.getBoundingClientRect();
+  return {
+    x: Math.max(0, Math.min(1, (event.clientX - box.left) / box.width)),
+    y: Math.max(0, Math.min(1, (event.clientY - box.top) / box.height)),
+  };
+}
+
+coverCanvas.addEventListener("pointerdown", (event) => {
+  if (event.button !== 0) return;
+  coverCanvas.setPointerCapture(event.pointerId);
+  const point = pointFrom(event);
+  drag = { from: point, to: point };
+});
+coverCanvas.addEventListener("pointermove", (event) => {
+  if (!drag) return;
+  drag.to = pointFrom(event);
+  drawCovers();
+});
+coverCanvas.addEventListener("pointerup", (event) => {
+  if (!drag) return;
+  drag.to = pointFrom(event);
+  const box = normalizedBox(drag.from, drag.to);
+  drag = null;
+  if (box.w > 0.004 && box.h > 0.004) covers.push(box);
+  drawCovers();
+});
+coverCanvas.addEventListener("pointercancel", () => {
+  drag = null;
+  drawCovers();
+});
+coverUndo.addEventListener("click", () => {
+  covers.pop();
+  drawCovers();
+});
+new ResizeObserver(() => placeCanvas()).observe(stage);
+
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error("Couldn't read that picture."));
+    image.src = src;
+  });
+}
+
+// Redraws the picture with the covers burned in. Re-encoding also leaves any
+// file metadata behind. Big screenshots are scaled down until they fit the wall.
+async function composePost(shot) {
+  const image = await loadImage(shot.image);
+  let scale = 1;
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(image.naturalWidth * scale);
+    canvas.height = Math.round(image.naturalHeight * scale);
+    const context = canvas.getContext("2d");
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    context.fillStyle = "#111111";
+    for (const box of covers) {
+      context.fillRect(
+        Math.floor(box.x * canvas.width),
+        Math.floor(box.y * canvas.height),
+        Math.ceil(box.w * canvas.width),
+        Math.ceil(box.h * canvas.height)
+      );
+    }
+    const dataUrl = canvas.toDataURL("image/jpeg", 0.82);
+    if (dataUrl.length <= MAX_POST_CHARS) return dataUrl;
+    scale *= 0.75;
+  }
+  throw new Error("That picture is too big for the wall.");
 }
 
 function renderViewer() {
@@ -150,15 +288,21 @@ function renderViewer() {
 
   const isPosting = posting.has(shot.id);
   if (shot.sharedAt) {
-    postButton.textContent = `On the wall since ${formatWhen(shot.sharedAt)}`;
+    postButton.textContent = `Posted ${formatWhen(shot.sharedAt)}`;
     postButton.disabled = true;
     postConfirm.hidden = true;
+    stopCovering();
   } else {
     postButton.textContent = isPosting ? "Posting…" : "Post to the wall";
     postButton.disabled = isPosting;
   }
-  postButton.hidden = !postConfirm.hidden;
+  postButton.hidden = !postConfirm.hidden || !unpostConfirm.hidden;
   postYes.disabled = isPosting;
+  unpostButton.hidden = !shot.sharedAt || !shot.wallId || !unpostConfirm.hidden;
+  if (!shot.sharedAt) unpostConfirm.hidden = true;
+  deleteQuestion.textContent = shot.sharedAt
+    ? "Delete this picture from the gallery? It stays on the wall, and you won't be able to remove it from here afterwards."
+    : "Delete this picture from the gallery?";
 }
 
 function openViewer(id) {
@@ -193,11 +337,21 @@ function downloadShot(shot) {
   link.click();
 }
 
-async function markShared(id, sharedAt) {
+async function updateRecord(id, changes) {
   const index = await readIndex();
   await chrome.storage.local.set({
-    [INDEX_KEY]: index.map((item) => (item.id === id ? { ...item, sharedAt } : item)),
+    [INDEX_KEY]: index.map((item) => {
+      if (item.id !== id) return item;
+      const next = { ...item, ...changes };
+      for (const key of Object.keys(changes)) if (changes[key] === undefined) delete next[key];
+      return next;
+    }),
   });
+}
+
+async function errorFrom(response, fallback) {
+  const payload = await response.json().catch(() => null);
+  return new Error(payload?.error || fallback);
 }
 
 async function postToWall(shot) {
@@ -205,23 +359,56 @@ async function postToWall(shot) {
   posting.add(shot.id);
   renderViewer();
   try {
-    const response = await fetch(`${COMMUNITY_ORIGIN}/api/stamps`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        createdAt: shot.createdAt,
-        image: shot.image,
-      }),
-    });
-    if (!response.ok) throw new Error("Couldn't post to the wall.");
+    const image = await composePost(shot);
+    let response;
+    try {
+      response = await fetch(`${COMMUNITY_ORIGIN}/api/stamps`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ createdAt: shot.createdAt, image }),
+      });
+    } catch {
+      throw new Error("Couldn't reach the wall. Check your connection, then try again.");
+    }
+    if (!response.ok) throw await errorFrom(response, "Couldn't post to the wall.");
+    const result = await response.json();
     posting.delete(shot.id);
     postConfirm.hidden = true;
-    await markShared(shot.id, Date.now());
-    showToast("Posted. The wall shows the picture and the time.");
-  } catch {
+    stopCovering();
+    await updateRecord(shot.id, { sharedAt: Date.now(), wallId: result.id, wallDeleteToken: result.deleteToken });
+    showToast(
+      result.status === "pending"
+        ? "Sent. It shows on the wall once a person checks it."
+        : "Posted. The wall shows the picture and the time."
+    );
+  } catch (error) {
     posting.delete(shot.id);
     renderViewer();
-    showToast("Couldn't reach the wall. Check that the Slop Stamp site is running, then try again.");
+    showToast(error?.message || "Couldn't post to the wall.");
+  }
+}
+
+async function removeFromWall(shot) {
+  if (!shot.wallId || !shot.wallDeleteToken) return;
+  unpostYes.disabled = true;
+  try {
+    let response;
+    try {
+      response = await fetch(`${COMMUNITY_ORIGIN}/api/stamps/${encodeURIComponent(shot.wallId)}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${shot.wallDeleteToken}` },
+      });
+    } catch {
+      throw new Error("Couldn't reach the wall. Check your connection, then try again.");
+    }
+    if (!response.ok) throw await errorFrom(response, "Couldn't remove it from the wall.");
+    unpostConfirm.hidden = true;
+    await updateRecord(shot.id, { sharedAt: undefined, wallId: undefined, wallDeleteToken: undefined });
+    showToast("Removed from the wall.");
+  } catch (error) {
+    showToast(error?.message || "Couldn't remove it from the wall.");
+  } finally {
+    unpostYes.disabled = false;
   }
 }
 
@@ -313,12 +500,28 @@ document.querySelector("#delete-all-yes").addEventListener("click", async () => 
 postButton.addEventListener("click", () => {
   postConfirm.hidden = false;
   postButton.hidden = true;
+  startCovering();
   postYes.focus();
 });
 document.querySelector("#post-no").addEventListener("click", () => {
   postConfirm.hidden = true;
   postButton.hidden = false;
+  stopCovering();
   postButton.focus();
+});
+unpostButton.addEventListener("click", () => {
+  unpostConfirm.hidden = false;
+  unpostButton.hidden = true;
+  document.querySelector("#unpost-no").focus();
+});
+document.querySelector("#unpost-no").addEventListener("click", () => {
+  unpostConfirm.hidden = true;
+  unpostButton.hidden = false;
+  unpostButton.focus();
+});
+unpostYes.addEventListener("click", () => {
+  const shot = currentShot();
+  if (shot) void removeFromWall(shot);
 });
 postYes.addEventListener("click", () => {
   const shot = currentShot();
@@ -373,7 +576,11 @@ viewer.addEventListener("close", () => {
 });
 
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (area === "local" && changes[INDEX_KEY]) void refresh();
+  if (area === "local" && changes[INDEX_KEY]) document.querySelector("#community-link").href = `${COMMUNITY_ORIGIN}/community.html`;
+
+void refresh();
 });
+
+document.querySelector("#community-link").href = `${COMMUNITY_ORIGIN}/community.html`;
 
 void refresh();

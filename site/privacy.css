@@ -1,0 +1,17 @@
+.prose {
+  max-width: 72ch;
+}
+
+.prose .lead {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.prose h2 {
+  margin: 28px 0 6px;
+  font-size: 21px;
+}
+
+.prose p {
+  margin: 0 0 12px;
+}

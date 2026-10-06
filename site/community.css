@@ -374,10 +374,41 @@ h2 {
 }
 
 .viewer-frame figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
   margin-top: 10px;
   font-size: 17px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+}
+
+.link-btn {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 400;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.link-btn:hover:not(:disabled) {
+  color: var(--stamp);
+}
+
+.link-btn:disabled {
+  cursor: default;
+  text-decoration: none;
+}
+
+.link-btn[hidden] {
+  display: none;
 }
 
 .viewer-controls {

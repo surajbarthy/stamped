@@ -283,6 +283,20 @@ h1 {
   flex: 1;
 }
 
+.cover-count {
+  font-weight: 700;
+}
+
+.cover-canvas {
+  position: absolute;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.cover-canvas[hidden] {
+  display: none;
+}
+
 /* Grid */
 
 .grid {
@@ -419,6 +433,7 @@ h1 {
 }
 
 .viewer-image {
+  position: relative;
   display: grid;
   place-items: center;
   min-height: 0;

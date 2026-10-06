@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="color-scheme" content="light" />
+    <title>Moderation · Slop Stamp</title>
+    <link rel="stylesheet" href="community.css" />
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="masthead">
+        <a class="logo" href="index.html">Slop Stamp</a>
+        <nav class="nav-links" aria-label="Site">
+          <a href="community.html">The wall</a>
+          <a href="admin.html" aria-current="page">Moderation</a>
+        </nav>
+      </header>
+
+      <main class="window">
+        <div class="titlebar">
+          <h1>Moderation</h1>
+          <span id="tally" class="tally"></span>
+        </div>
+        <div class="window-body">
+          <form id="login" class="admin-login">
+            <label for="key">Admin key</label>
+            <input id="key" type="password" autocomplete="current-password" required />
+            <button type="submit" class="btn">Open</button>
+            <p class="note">The key is the ADMIN_TOKEN secret you set when deploying. It stays on this browser.</p>
+          </form>
+
+          <div id="panel" hidden>
+            <div class="intro">
+              <div class="admin-tabs" role="tablist" aria-label="Posts">
+                <button type="button" class="btn" role="tab" data-status="pending">Waiting</button>
+                <button type="button" class="btn" role="tab" data-status="published">On the wall</button>
+                <button type="button" class="btn" role="tab" data-status="hidden">Hidden</button>
+              </div>
+              <label class="admin-mode">
+                <input type="checkbox" id="mode" />
+                Approve posts before they go on the wall
+              </label>
+            </div>
+            <p id="note" class="note"></p>
+            <div id="grid" class="wall admin-grid"></div>
+            <p><button type="button" class="btn btn-small" id="logout">Forget the key on this browser</button></p>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div class="admin-toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="admin.js"></script>
+  </body>
+</html>
