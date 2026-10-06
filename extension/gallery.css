@@ -612,3 +612,13 @@ h1 {
   height: 48px;
   transform: rotate(-8deg);
 }
+
+#community-link,
+#community-link:visited {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+#community-link:hover {
+  color: var(--stamp);
+}

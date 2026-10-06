@@ -163,6 +163,17 @@ a:hover {
   font-size: 18px;
 }
 
+.nav-links a,
+.nav-links a:visited {
+  color: var(--ink);
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  color: var(--stamp);
+}
+
 .nav-links a[aria-current="page"] {
   color: var(--ink);
   font-weight: 700;
