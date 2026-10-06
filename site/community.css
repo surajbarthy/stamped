@@ -188,7 +188,7 @@ a:hover {
 .viewer {
   border: 2px solid var(--ink);
   background: var(--sheet);
-  box-shadow: 6px 6px 0 var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
 }
 
 .titlebar {
@@ -515,7 +515,7 @@ a.btn-primary:visited {
 
   .window,
   .viewer {
-    box-shadow: 4px 4px 0 var(--ink);
+    box-shadow: 2px 2px 0 var(--ink);
   }
 
   .window-body {
@@ -574,7 +574,7 @@ a.btn-primary:visited {
   padding: 18px 20px;
   border: 2px solid var(--ink);
   background: var(--note, #ffff99);
-  box-shadow: 6px 6px 0 var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
 }
 
 .install-band p {
@@ -585,7 +585,7 @@ a.btn-primary:visited {
 
 @media (max-width: 720px) {
   .install-band {
-    box-shadow: 4px 4px 0 var(--ink);
+    box-shadow: 2px 2px 0 var(--ink);
   }
 
   .masthead-tools .btn-store {

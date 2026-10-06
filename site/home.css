@@ -103,6 +103,66 @@
   }
 }
 
+/* Privacy card: a posted picture with the name blacked out. */
+.cover-demo {
+  margin: 4px 0 18px;
+}
+
+.cover-post {
+  position: relative;
+  width: min(280px, 100%);
+  padding: 8px 8px 10px;
+  border: 2px solid var(--ink);
+  background: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  transform: rotate(-1.5deg);
+}
+
+.cover-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: #666;
+}
+
+.cover-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #111;
+}
+
+.cover-bar {
+  width: 110px;
+  height: 14px;
+  background: #111;
+}
+
+.cover-art {
+  height: 72px;
+  background:
+    radial-gradient(circle at 30% 30%, #ff9de2 0, transparent 45%),
+    radial-gradient(circle at 75% 70%, #4ff0ff 0, transparent 50%),
+    linear-gradient(135deg, #3b1d8f, #8a2be2 45%, #ff7a3d);
+}
+
+.cover-stamp {
+  position: absolute;
+  right: -14px;
+  bottom: -14px;
+  width: 58px;
+  height: 58px;
+  transform: rotate(-10deg);
+}
+
+.cover-stamp svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 /* Hero: a made-up slop post, and the stamp landing on it on a loop. */
 .slop-demo {
   position: relative;
@@ -115,7 +175,7 @@
   padding: 10px 10px 12px;
   border: 2px solid var(--ink);
   background: #fff;
-  box-shadow: 4px 4px 0 var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   transform: rotate(2deg);
 }
