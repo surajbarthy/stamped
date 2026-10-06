@@ -3,67 +3,97 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Gallery — Slop Stamp</title>
+    <meta name="color-scheme" content="light" />
+    <title>Gallery · Slop Stamp</title>
     <link rel="stylesheet" href="gallery.css" />
   </head>
   <body>
-    <header class="nav">
-      <div class="nav-brand">
+    <div class="page">
+      <header class="masthead">
         <p class="logo">Slop Stamp</p>
-        <p class="nav-note">On this browser</p>
-      </div>
-      <div class="actions">
-        <a class="btn" id="community-link" href="http://127.0.0.1:8787/community.html" target="_blank" rel="noreferrer">Community</a>
-        <button type="button" id="export" class="btn btn-ghost">Export</button>
-        <button type="button" id="delete-all" class="btn btn-ghost">Delete all</button>
-      </div>
-    </header>
+        <a id="community-link" href="http://127.0.0.1:8787/community.html" target="_blank" rel="noreferrer">See the wall</a>
+      </header>
 
-    <main>
-      <section class="hero">
-        <p class="eyebrow">Gallery</p>
-        <h1>Yours, until you share it.</h1>
-        <p class="lead">Saved stamps live on this browser.</p>
-        <p class="sub">The wall only gets a picture and a time.</p>
-      </section>
-
-      <section class="stats" aria-label="Gallery statistics">
-        <article>
-          <span id="stat-shots">0</span>
-          <p>Screenshots</p>
-        </article>
-        <article>
-          <span id="stat-stamps">0</span>
-          <p>Stamps</p>
-        </article>
-        <article>
-          <span id="stat-sites">0</span>
-          <p>Websites</p>
-        </article>
-      </section>
-
-      <p id="status" class="status" hidden></p>
-      <div id="grid" class="grid"></div>
-    </main>
-
-    <div id="modal" class="modal" hidden>
-      <div class="modal-backdrop" data-close="true"></div>
-      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        <img id="modal-image" alt="" />
-        <div class="modal-copy">
-          <h2 id="modal-title"></h2>
-          <p id="modal-url"></p>
-          <p id="modal-meta"></p>
-          <div class="modal-actions">
-            <button type="button" id="modal-community" class="btn">Community</button>
-            <button type="button" id="modal-download" class="btn btn-ghost">Download</button>
-            <button type="button" id="modal-share" class="btn btn-ghost">Share</button>
-            <button type="button" id="modal-delete" class="btn btn-danger">Delete</button>
-            <button type="button" id="modal-close" class="btn btn-ghost">Close</button>
-          </div>
+      <main class="window">
+        <div class="titlebar">
+          <h1>Your gallery</h1>
+          <span id="tally" class="tally"></span>
         </div>
-      </div>
+        <div class="window-body">
+          <div class="intro">
+            <div>
+              <p class="lead">Yours, until you share it.</p>
+              <p id="summary">Saved stamps live on this browser.</p>
+              <p class="quiet">The wall only gets a picture and a time.</p>
+            </div>
+            <div class="tools" id="tools">
+              <button type="button" id="export" class="btn">Export backup</button>
+              <button type="button" id="delete-all" class="btn btn-danger">Delete all</button>
+            </div>
+          </div>
+          <div class="confirm" id="delete-all-confirm" role="alertdialog" aria-labelledby="delete-all-question" hidden>
+            <p id="delete-all-question">Delete every saved picture?</p>
+            <div class="confirm-row">
+              <button type="button" class="btn btn-danger" id="delete-all-yes">Delete all</button>
+              <button type="button" class="btn" id="delete-all-no">Keep them</button>
+            </div>
+          </div>
+
+          <div id="grid" class="grid"></div>
+        </div>
+      </main>
     </div>
+
+    <dialog id="viewer" class="viewer" aria-labelledby="viewer-title">
+      <div class="titlebar">
+        <p class="viewer-count">Picture <span id="viewer-count"></span></p>
+        <button type="button" class="btn btn-small" id="viewer-close">Close</button>
+      </div>
+      <div class="viewer-body">
+        <div class="viewer-image">
+          <img id="viewer-img" alt="" />
+        </div>
+        <aside class="viewer-panel">
+          <h2 id="viewer-title"></h2>
+          <a id="viewer-url" class="viewer-url" target="_blank" rel="noreferrer"></a>
+          <p id="viewer-meta" class="viewer-meta"></p>
+
+          <div class="viewer-actions">
+            <div id="post-area">
+              <button type="button" class="btn btn-primary btn-wide" id="post">Post to the wall</button>
+              <div class="confirm" id="post-confirm" hidden>
+                <p>Anyone who opens the wall will see this picture and the time. The page address and title stay here. You can't take a post back from the gallery.</p>
+                <div class="confirm-row">
+                  <button type="button" class="btn btn-primary" id="post-yes">Post it</button>
+                  <button type="button" class="btn" id="post-no">Cancel</button>
+                </div>
+              </div>
+            </div>
+            <div class="confirm-row">
+              <button type="button" class="btn" id="download">Download</button>
+              <button type="button" class="btn" id="share">Share</button>
+            </div>
+            <div id="delete-area">
+              <button type="button" class="link-btn" id="delete">Delete this picture</button>
+              <div class="confirm" id="delete-confirm" hidden>
+                <p>Delete this picture from the gallery?</p>
+                <div class="confirm-row">
+                  <button type="button" class="btn btn-danger" id="delete-yes">Delete</button>
+                  <button type="button" class="btn" id="delete-no">Keep it</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="viewer-nav">
+            <button type="button" class="btn" id="viewer-prev">Previous</button>
+            <button type="button" class="btn" id="viewer-next">Next</button>
+          </div>
+        </aside>
+      </div>
+    </dialog>
+
+    <div class="statusbar" id="toast" role="status" aria-live="polite"></div>
 
     <script src="gallery.js"></script>
   </body>

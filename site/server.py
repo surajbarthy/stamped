@@ -160,7 +160,8 @@ class Handler(BaseHTTPRequestHandler):
             if not file_path.is_file():
                 self.send_error(404)
                 return
-            self._send(200, "image/png", file_path.read_bytes())
+            body = file_path.read_bytes()
+            self._send(200, "image/jpeg" if body[:3] == b"\xff\xd8\xff" else "image/png", body)
             return
         if path in ("/", "/index.html"):
             self._send_file(ROOT / "index.html", "text/html; charset=utf-8")
@@ -179,9 +180,12 @@ class Handler(BaseHTTPRequestHandler):
         if (ROOT not in file_path.parents and file_path != ROOT) or not file_path.is_file():
             self.send_error(404)
             return
-        kind = "text/css; charset=utf-8" if file_path.suffix == ".css" else "text/javascript; charset=utf-8"
-        if file_path.suffix == ".html":
-            kind = "text/html; charset=utf-8"
+        kind = {
+            ".css": "text/css; charset=utf-8",
+            ".html": "text/html; charset=utf-8",
+            ".woff2": "font/woff2",
+            ".txt": "text/plain; charset=utf-8",
+        }.get(file_path.suffix, "text/javascript; charset=utf-8")
         self._send_file(file_path, kind)
 
     def do_POST(self):
