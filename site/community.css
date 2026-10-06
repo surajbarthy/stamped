@@ -524,3 +524,10 @@ a.btn-primary:visited {
     width: calc(100vw - 16px);
   }
 }
+
+.chrome-icon {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
