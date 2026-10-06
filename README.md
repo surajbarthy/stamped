@@ -51,10 +51,10 @@ The site, the wall and the API run as one Cloudflare Worker, in `cloud/`. To run
 ```bash
 cd cloud
 npm install
-npm run db:local
-echo 'ADMIN_TOKEN=local-admin-key' > .dev.vars
 npm run dev
 ```
+
+`npm run dev` creates the local database tables and a local admin key the first time. The old `python3 site/server.py` is gone; this replaces it.
 
 Then open http://127.0.0.1:8787/ for the site, http://127.0.0.1:8787/community for the wall, and http://127.0.0.1:8787/admin (key `local-admin-key`) to approve posts. The unpacked extension posts there by default. `cloud/DEPLOY.md` covers putting it on a real domain.
 

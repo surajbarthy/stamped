@@ -72,10 +72,10 @@ If you ever see child sexual abuse material, delete it and report it to NCMEC at
 ```bash
 cd cloud
 npm install
-npm run db:local
-echo 'ADMIN_TOKEN=local-admin-key' > .dev.vars
 npm run dev
 ```
+
+The first run creates the local database tables and a `.dev.vars` file with the admin key `local-admin-key`.
 
 The site is then at http://127.0.0.1:8787, which is also the extension's default `COMMUNITY_ORIGIN`, so the unpacked extension posts to it. `npm test` runs the image checks; `node test/smoke.mjs` runs the API checks against the local Worker (posting is limited to five a minute, so wait a minute between runs).
 
