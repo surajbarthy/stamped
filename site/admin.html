@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="color-scheme" content="light" />
+    <title>Moderation · Slop Stamp</title>
+    <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <script src="font.js"></script>
+    <link rel="stylesheet" href="community.css" />
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="masthead">
+        <a class="logo" href="index.html"><svg class="logo-mark" viewBox="0 0 124 124" aria-hidden="true" focusable="false"><clipPath id="logo-clip"><circle cx="62" cy="62" r="53"/></clipPath><circle cx="62" cy="62" r="62" fill="#e10600"/><circle cx="62" cy="62" r="53" fill="#fff"/><rect x="-43.4" y="57.5" width="210.8" height="9" fill="#e10600" transform="rotate(-45 62 62)" clip-path="url(#logo-clip)"/><text x="62" y="58" text-anchor="middle" font-size="32" font-weight="700" fill="#111" font-family='"Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", cursive'>AI</text><text x="62" y="84" text-anchor="middle" font-size="32" font-weight="700" fill="#111" font-family='"Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", cursive'>slop</text></svg>Slop Stamp</a>
+        <div class="masthead-tools">
+          <nav class="nav-links" aria-label="Site">
+            <a href="community.html">The wall</a>
+            <a href="admin.html" aria-current="page">Moderation</a>
+          </nav>
+          <button type="button" class="font-toggle" data-font-toggle aria-pressed="false">Plain font</button>
+        </div>
+      </header>
+
+      <main class="window">
+        <div class="titlebar">
+          <h1>Moderation</h1>
+          <span id="tally" class="tally"></span>
+        </div>
+        <div class="window-body">
+          <form id="login" class="admin-login">
+            <label for="key">Admin key</label>
+            <input id="key" type="password" autocomplete="current-password" required />
+            <button type="submit" class="btn">Open</button>
+            <p class="note">The key is the ADMIN_TOKEN secret you set when deploying. It stays on this browser.</p>
+          </form>
+
+          <div id="panel" hidden>
+            <div class="intro">
+              <div class="admin-tabs" role="tablist" aria-label="Posts">
+                <button type="button" class="btn" role="tab" data-status="pending">Waiting</button>
+                <button type="button" class="btn" role="tab" data-status="published">On the wall</button>
+                <button type="button" class="btn" role="tab" data-status="hidden">Hidden</button>
+              </div>
+              <label class="admin-mode">
+                <input type="checkbox" id="mode" />
+                Approve posts before they go on the wall
+              </label>
+            </div>
+            <p id="note" class="note"></p>
+            <div id="grid" class="wall admin-grid"></div>
+            <p><button type="button" class="btn btn-small" id="logout">Forget the key on this browser</button></p>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div class="admin-toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="admin.js"></script>
+  </body>
+</html>

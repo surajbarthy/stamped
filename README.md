@@ -33,23 +33,30 @@ From a picture you can:
 - Open it full size.
 - Download it.
 - Share the image through the system share sheet, or copy it if that is not available.
-- Send it to the community wall.
+- Send it to the community wall, after blacking out anything private in it.
+- Take it back off the wall.
 - Delete it, or delete every saved picture.
 - Export a JSON backup. That file includes the page addresses and titles, because it is a local backup, not a public post.
 
 ## Community wall
 
-Sharing to the community sends two fields: `createdAt` and `image`. The server ignores anything else. The wall shows the picture and a formatted time. **Randomize** shuffles the order.
+Posting to the wall is a choice made one picture at a time. Before a picture goes, the gallery lets you drag boxes over anything private, like a name or an inbox, and those parts are blacked out in the posted copy. Your saved copy stays as it was.
 
-The first six pictures are labeled samples so the wall is not empty before anyone shares. A real share shows up the same way: picture and time, nothing else.
+The post sends two fields: `createdAt` and the picture. The server strips metadata from the image, stores it, and gives the gallery a removal key, so **Remove from the wall** in the gallery deletes it again. Nothing about the poster is stored.
 
-The wall and the one-page site are served locally:
+New posts wait for a person to approve them on the moderation page (`/admin`). Anyone can report a picture on the wall, and three reports hide it until it's looked at. A switch on the moderation page lets posts go live instantly instead.
+
+The site, the wall and the API run as one Cloudflare Worker, in `cloud/`. To run them locally:
 
 ```bash
-python3 site/server.py
+cd cloud
+npm install
+npm run dev
 ```
 
-Then open http://127.0.0.1:8787/ for the site and http://127.0.0.1:8787/community.html for the wall. The server has to be running for a community share to succeed. It listens only on this machine, keeps at most 200 posts, and writes them under `site/data/`.
+`npm run dev` creates the local database tables and a local admin key the first time. The old `python3 site/server.py` is gone; this replaces it.
+
+Then open http://127.0.0.1:8787/ for the site, http://127.0.0.1:8787/community for the wall, and http://127.0.0.1:8787/admin (key `local-admin-key`) to approve posts. The unpacked extension posts there by default. `cloud/DEPLOY.md` covers putting it on a real domain.
 
 ## Install the extension
 
@@ -58,9 +65,10 @@ This is an unpacked extension. It is not in the Chrome Web Store yet. The **Add 
 1. Open `chrome://extensions`.
 2. Turn on Developer mode.
 3. Choose **Load unpacked** and select the `extension` folder in this repo.
-4. After code changes, click the reload button on the extension card, then refresh any tabs that were already open.
+4. The wall address is in `extension/config.js`. It points at the local Worker until you change it.
+5. After code changes, click the reload button on the extension card, then refresh any tabs that were already open.
 
-The icon click works on normal `http` and `https` pages. It does not run on `chrome://` pages, and a click inside a cross-origin iframe does not place a stamp.
+The extension asks for no site access up front. Clicking the icon gives it access to that one tab until the tab navigates away, which is enough to stamp and take pictures there. The icon click works on normal `http` and `https` pages. It does not run on `chrome://` pages, and a click inside a cross-origin iframe does not place a stamp.
 
 ## How the pieces fit
 
@@ -70,8 +78,9 @@ toolbar click
   -> click places an AI slop mark
   -> if saving is on, a JPEG of the viewport is stored locally
   -> the bar shows a thumbnail
-  -> Gallery can download it, share the image, or post time + image
-  -> the local site shows that post on the community wall
+  -> Gallery can download it, share the image, or cover private parts and post time + image
+  -> a person approves it on /admin
+  -> the wall shows it, until the poster removes it or reports hide it
 ```
 
 The extension has no popup, so clicking the icon goes straight to the background script. That script toggles stamp mode in the page and sets the ON badge. The content script places the mark, blocks the click from also activating whatever sits underneath it, and asks for the screenshot. The background script takes the picture with `chrome.tabs.captureVisibleTab` as a JPEG, so the save stays small enough to succeed.
@@ -79,11 +88,12 @@ The extension has no popup, so clicking the icon goes straight to the background
 ## Layout of the repo
 
 - `extension/` — Manifest V3 extension: stamp mode, local gallery, icons.
-- `site/` — marketing page, community wall, and the Python server.
-- `site/data/` — community index and images, including the six samples.
+- `site/` — marketing page, community wall, moderation page and privacy policy (static files).
+- `cloud/` — the Cloudflare Worker that serves `site/` and the wall API, its database schema, tests, and `DEPLOY.md`.
+- `store/LISTING.md` — Chrome Web Store listing text, permission reasons and privacy answers.
 - `PLAN.md` — build log of what shipped and what is still waiting.
 
 ## Still waiting
 
-- A real Chrome Web Store listing URL.
-- A public address for the community server. Until then, the gallery posts to `http://127.0.0.1:8787`.
+- A Cloudflare account and the domain pointed at it, then the steps in `cloud/DEPLOY.md`.
+- A real Chrome Web Store listing URL for the Add to Chrome link (see `store/LISTING.md`).

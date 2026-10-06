@@ -5,13 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light" />
     <title>Gallery · Slop Stamp</title>
+    <link rel="icon" href="icons/icon48.png" type="image/png" />
+    <script src="font.js"></script>
     <link rel="stylesheet" href="gallery.css" />
   </head>
   <body>
     <div class="page">
       <header class="masthead">
-        <p class="logo">Slop Stamp</p>
-        <a id="community-link" href="http://127.0.0.1:8787/community.html" target="_blank" rel="noreferrer">See the wall</a>
+        <p class="logo"><svg class="logo-mark" viewBox="0 0 124 124" aria-hidden="true" focusable="false"><clipPath id="logo-clip"><circle cx="62" cy="62" r="53"/></clipPath><circle cx="62" cy="62" r="62" fill="#e10600"/><circle cx="62" cy="62" r="53" fill="#fff"/><rect x="-43.4" y="57.5" width="210.8" height="9" fill="#e10600" transform="rotate(-45 62 62)" clip-path="url(#logo-clip)"/><text x="62" y="58" text-anchor="middle" font-size="32" font-weight="700" fill="#111" font-family='"Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", cursive'>AI</text><text x="62" y="84" text-anchor="middle" font-size="32" font-weight="700" fill="#111" font-family='"Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", cursive'>slop</text></svg>Slop Stamp</p>
+        <div class="masthead-tools">
+          <a id="community-link" href="#" target="_blank" rel="noreferrer">See the wall</a>
+          <button type="button" class="font-toggle" data-font-toggle aria-pressed="false">Plain font</button>
+        </div>
       </header>
 
       <main class="window">
@@ -50,8 +55,9 @@
         <button type="button" class="btn btn-small" id="viewer-close">Close</button>
       </div>
       <div class="viewer-body">
-        <div class="viewer-image">
+        <div class="viewer-image" id="viewer-stage">
           <img id="viewer-img" alt="" />
+          <canvas id="cover-canvas" class="cover-canvas" hidden></canvas>
         </div>
         <aside class="viewer-panel">
           <h2 id="viewer-title"></h2>
@@ -59,13 +65,20 @@
           <p id="viewer-meta" class="viewer-meta"></p>
 
           <div class="viewer-actions">
-            <div id="post-area">
+            <div id="post-area" class="post-area">
+              <div id="cover-tools" class="cover-tools">
+                <p class="cover-hint">Drag on the picture to black out a name, an email or a face. Only the posted copy is covered.</p>
+                <p class="cover-line"><span id="cover-count" class="cover-count">Nothing covered yet.</span> <button type="button" class="link-btn" id="cover-undo" disabled>Undo</button></p>
+                <label class="post-agree" id="post-agree-row"><input type="checkbox" id="post-agree" /> <span>No private people or their info is in this, and my stamp is my opinion. <a id="rules-link" href="#" target="_blank" rel="noreferrer">Wall rules</a></span></label>
+              </div>
               <button type="button" class="btn btn-primary btn-wide" id="post">Post to the wall</button>
-              <div class="confirm" id="post-confirm" hidden>
-                <p>Anyone who opens the wall will see this picture and the time. The page address and title stay here. You can't take a post back from the gallery.</p>
+              <p class="post-note" id="post-note">Only the picture and the time are sent. A person checks it before it shows.</p>
+              <button type="button" class="link-btn" id="unpost" hidden>Remove from the wall</button>
+              <div class="confirm" id="unpost-confirm" hidden>
+                <p>Take this picture off the wall? It's deleted from the server. Your saved copy stays here.</p>
                 <div class="confirm-row">
-                  <button type="button" class="btn btn-primary" id="post-yes">Post it</button>
-                  <button type="button" class="btn" id="post-no">Cancel</button>
+                  <button type="button" class="btn btn-danger" id="unpost-yes">Remove it</button>
+                  <button type="button" class="btn" id="unpost-no">Keep it up</button>
                 </div>
               </div>
             </div>
@@ -76,7 +89,7 @@
             <div id="delete-area">
               <button type="button" class="link-btn" id="delete">Delete this picture</button>
               <div class="confirm" id="delete-confirm" hidden>
-                <p>Delete this picture from the gallery?</p>
+                <p id="delete-question">Delete this picture from the gallery?</p>
                 <div class="confirm-row">
                   <button type="button" class="btn btn-danger" id="delete-yes">Delete</button>
                   <button type="button" class="btn" id="delete-no">Keep it</button>
@@ -95,6 +108,7 @@
 
     <div class="statusbar" id="toast" role="status" aria-live="polite"></div>
 
+    <script src="config.js"></script>
     <script src="gallery.js"></script>
   </body>
 </html>

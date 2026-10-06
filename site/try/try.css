@@ -207,3 +207,15 @@ h1 {
     grid-template-columns: 1fr;
   }
 }
+
+.chrome-icon {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+.btn:has(.chrome-icon) {
+  display: inline-flex;
+  align-items: center;
+}

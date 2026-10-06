@@ -1,0 +1,46 @@
+{
+  // Slop Stamp: the public site, the wall, and its API on one Worker.
+  // DEPLOY.md walks through filling in the two ids and the domain below.
+  "name": "slop-stamp",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "../site",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/api/*", "/media/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "stamped",
+      // Replace with the id printed by `npx wrangler d1 create stamped`.
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "stamped-media"
+    }
+  ],
+  "ratelimits": [
+    {
+      "name": "POST_LIMITER",
+      "namespace_id": "1001",
+      "simple": { "limit": 5, "period": 60 }
+    },
+    {
+      "name": "REPORT_LIMITER",
+      "namespace_id": "1002",
+      "simple": { "limit": 10, "period": 60 }
+    }
+  ],
+  "vars": {
+    "REPORTS_TO_HIDE": "3",
+    "MAX_PENDING": "300"
+  }
+  // Uncomment and set your domain once it is on Cloudflare.
+  // "routes": [{ "pattern": "stamp.example.com", "custom_domain": true }]
+}

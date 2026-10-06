@@ -35,6 +35,27 @@ todos:
   - id: public-host
     content: Point the extension at a public community host once that URL exists
     status: pending
+  - id: cloud-wall
+    content: Run the site, wall and API as a Cloudflare Worker with R2 images, D1 posts, rate limits and metadata stripping
+    status: completed
+  - id: moderation
+    content: Hold posts for approval on /admin, hide after three reports, and switch to instant publishing when wanted
+    status: completed
+  - id: take-back
+    content: Return a removal key with each post so the gallery can take it off the wall
+    status: completed
+  - id: cover-up
+    content: Black out private parts of a picture in the gallery before it is posted
+    status: completed
+  - id: permissions
+    content: Drop all-sites access and the always-on content script; rely on activeTab from the icon click
+    status: completed
+  - id: one-look
+    content: Restyle the home page in the wall's Comic Sans window style and add a Plain font switch to every page and the gallery
+    status: completed
+  - id: privacy-listing
+    content: Add a privacy policy page and the Chrome Web Store listing text
+    status: completed
 isProject: false
 ---
 
@@ -49,8 +70,8 @@ One unpacked extension, a private gallery on this browser, and a local site. Liv
 3. **Automatic screenshots.** Each stamp, when saving is on, hides the bar and asks the service worker for `chrome.tabs.captureVisibleTab` as JPEG quality 75. The page URL and title come from the content script. The reply is only `{ok, id, createdAt}`; the content script then reads `stamped:shot:${id}` for the thumbnail. Records live in `stamped:index`. The 101st save drops the oldest image. A missing `stamped:saveEnabled` key means saving is on.
 4. **Bar controls.** The bar shows the count, Saving on/off, Gallery, a hint, and this visit's thumbnails. Deleting a thumbnail removes that shot from storage. The bar stays after stamp mode closes.
 5. **Private gallery.** `extension/gallery.html` lists shots newest first, with stats, a full-size modal, JSON export, download, system share or clipboard, and delete one or all. Display name is Slop Stamp.
-6. **Community post.** Community sends only `{createdAt, image}` to `http://127.0.0.1:8787`. The server ignores any other fields and stores `{id, createdAt}` plus the image bytes, capped at 200.
-7. **Site.** `python3 site/server.py` serves the marketing page, the community wall, and `/api/stamps`. Six labeled samples seed an empty wall. Randomize shuffles the wall. The pages are white, Helvetica, hairline rules, numbered sections, and one red double-ring mark.
+6. **Community post.** The gallery redraws the picture with any covered boxes blacked out, then sends only `{createdAt, image}` to `COMMUNITY_ORIGIN` from `extension/config.js`. The Worker checks it is a real JPEG or PNG, strips metadata, stores it in R2 with a D1 row, and returns `{id, status, deleteToken}`. The gallery keeps `wallId` and `wallDeleteToken` so it can remove the post later.
+7. **Site.** The Worker in `cloud/` serves `site/` as static assets plus `/api/*` and `/media/*`. The wall lists approved posts; `/admin` approves, hides and deletes them with the `ADMIN_TOKEN` secret. The local Python server and its samples are gone; `npm run dev` in `cloud/` replaces them.
 8. **Click and save fixes.** Stamping uses `pointerdown` because cancelling `mousedown` can swallow `click`. Captures are JPEG so the message and storage write stay small. The badge follows the toggle response and `stamped:mode`, not the `executeScript` return value.
 
 ## How it works now
@@ -64,8 +85,12 @@ flowchart LR
   capture --> storage[chrome.storage.local]
   storage --> thumbs[Bar thumbnails]
   storage --> gallery[Private gallery]
-  gallery --> community[POST time and image]
-  community --> wall[Community wall]
+  gallery --> cover[Cover private parts]
+  cover --> community[POST time and image]
+  community --> queue[Waiting for approval]
+  queue --> wall[Community wall]
+  wall --> report[Three reports hide it]
+  gallery --> remove[Remove from the wall]
 ```
 
 - Crosshair while stamp mode is on. Clicks on `.stamped-bar` do not stamp.
@@ -77,7 +102,8 @@ flowchart LR
 
 Extension, under [extension/](extension/):
 
-- [extension/manifest.json](extension/manifest.json) — name Slop Stamp, no popup. Permissions: `activeTab`, `scripting`, `storage`, `unlimitedStorage`. Host permission `<all_urls>`.
+- [extension/manifest.json](extension/manifest.json) — name Slop Stamp, no popup. Permissions: `activeTab`, `scripting`, `storage`, `unlimitedStorage`. No host permissions and no declared content script; the icon click injects it.
+- [extension/config.js](extension/config.js) — `COMMUNITY_ORIGIN`, the wall address.
 - [extension/background.js](extension/background.js) — toggle, badge, JPEG capture, 100-image cap, gallery tab, save setting.
 - [extension/content.js](extension/content.js) — stamp mode, cancelled clicks, thumbnails, capture.
 - [extension/stamp.css](extension/stamp.css) — crosshair, bar, and mark.
@@ -88,12 +114,20 @@ Site, under [site/](site/):
 
 - [site/index.html](site/index.html), [site/site.css](site/site.css) — marketing page.
 - [site/community.html](site/community.html), [site/community.css](site/community.css), [site/community.js](site/community.js) — wall and Randomize.
-- [site/server.py](site/server.py) — `127.0.0.1:8787`.
-- [site/data/](site/data/) — stamp index and images, including samples.
+- [site/admin.html](site/admin.html), [site/admin.js](site/admin.js) — moderation page.
+- [site/privacy.html](site/privacy.html) — privacy policy.
+
+Cloud, under [cloud/](cloud/):
+
+- [cloud/src/worker.js](cloud/src/worker.js) — wall API, media, moderation.
+- [cloud/src/image.js](cloud/src/image.js) — JPEG and PNG checks and metadata stripping.
+- [cloud/migrations/](cloud/migrations/) — D1 schema.
+- [cloud/DEPLOY.md](cloud/DEPLOY.md) — account, domain and deploy steps.
 
 ## Still open
 
 - Add to Chrome still points at the Chrome Web Store home. Replace it when the listing URL exists.
-- `COMMUNITY_ORIGIN` in the gallery is `http://127.0.0.1:8787`. Replace it when there is a public host. The local server has to be running for community share to work.
+- `COMMUNITY_ORIGIN` in `extension/config.js` is `http://127.0.0.1:8787`, the local Worker. Replace it once the wall is deployed (see `cloud/DEPLOY.md`).
+- Stamping after the activeTab change needs a manual check in Chrome: click the icon, stamp a few times, confirm each picture saves.
 - After extension code changes, reload the unpacked extension at `chrome://extensions` and refresh open tabs.
 - Stamps are not redrawn after refresh. That stays out of scope.

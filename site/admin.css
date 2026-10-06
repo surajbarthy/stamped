@@ -1,0 +1,88 @@
+.admin-login {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+}
+
+.admin-login input {
+  min-width: 260px;
+  padding: 8px 10px;
+  border: 2px solid var(--ink);
+  font: inherit;
+}
+
+.admin-login .note {
+  flex-basis: 100%;
+}
+
+.admin-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-tabs [aria-selected="true"] {
+  background: var(--ink);
+  color: #fff;
+}
+
+.admin-mode {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-grid .tile {
+  cursor: default;
+}
+
+.admin-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-card img {
+  width: 100%;
+  border: 2px solid var(--ink);
+  background: var(--face);
+}
+
+.admin-card a {
+  display: block;
+}
+
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.admin-meta {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.admin-toast {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  max-width: calc(100vw - 32px);
+  padding: 8px 12px;
+  border: 2px solid var(--ink);
+  background: #ffff99;
+  opacity: 0;
+  transition: opacity 160ms ease-out;
+  pointer-events: none;
+}
+
+.admin-toast.is-visible {
+  opacity: 1;
+}
+
+.admin-login[hidden],
+#panel[hidden] {
+  display: none;
+}

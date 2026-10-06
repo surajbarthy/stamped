@@ -1,0 +1,16 @@
+{
+  "name": "slop-stamp-cloud",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "predev": "node scripts/dev-setup.mjs && wrangler d1 migrations apply stamped --local",
+    "dev": "wrangler dev --port 8787",
+    "db:local": "wrangler d1 migrations apply stamped --local",
+    "db:remote": "wrangler d1 migrations apply stamped --remote",
+    "deploy": "wrangler deploy",
+    "test": "node --test test/*.test.js"
+  },
+  "devDependencies": {
+    "wrangler": "^4.147.0"
+  }
+}
