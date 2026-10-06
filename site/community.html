@@ -4,46 +4,58 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Pages people stamped as AI slop, with the time they stamped them." />
-    <meta name="color-scheme" content="dark" />
+    <meta name="color-scheme" content="light" />
     <title>The wall · Slop Stamp</title>
-    <link rel="preload" href="fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="fonts/comic-neue-700.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="community.css" />
   </head>
   <body>
     <a class="skip" href="#grid">Skip to the pictures</a>
-    <header class="nav">
-      <a class="logo" href="index.html">Slop Stamp</a>
-      <nav class="nav-links" aria-label="Site">
-        <a href="index.html">The stamp</a>
-        <a href="community.html" aria-current="page">The wall</a>
-      </nav>
-    </header>
+    <div class="page">
+      <header class="masthead">
+        <a class="logo" href="index.html">Slop Stamp</a>
+        <nav class="nav-links" aria-label="Site">
+          <a href="index.html">The stamp</a>
+          <a href="community.html" aria-current="page">The wall</a>
+        </nav>
+      </header>
 
-    <main>
-      <section class="intro">
-        <h1>The wall</h1>
-        <div class="intro-side">
-          <p>Pages people stamped as slop. Each one carries the time it was stamped, and nothing else.</p>
-          <p id="note" class="note"></p>
-          <button type="button" class="btn" id="shuffle">Shuffle</button>
+      <main class="window">
+        <div class="titlebar">
+          <h1>The wall</h1>
+          <span id="tally" class="tally"></span>
         </div>
-      </section>
+        <div class="window-body">
+          <div class="intro">
+            <p>Pages people stamped as slop. Each picture carries the time it was stamped, and nothing else. Click one to see it big.</p>
+            <button type="button" class="btn" id="shuffle">Shuffle</button>
+          </div>
+          <p id="note" class="note"></p>
+          <div id="grid" class="wall" aria-busy="true"></div>
+        </div>
+      </main>
 
-      <div id="grid" class="wall" aria-busy="true"></div>
-    </main>
+      <footer class="footer">
+        <p>No accounts. No names. A picture and a time.</p>
+        <p><a href="index.html">Get the stamp</a></p>
+      </footer>
+    </div>
 
-    <dialog id="viewer" class="viewer" aria-label="Stamped page">
+    <dialog id="viewer" class="viewer" aria-labelledby="viewer-heading">
+      <div class="titlebar">
+        <h2 id="viewer-heading">Picture <span id="viewer-count"></span></h2>
+        <button type="button" class="btn btn-small" id="viewer-close">Close</button>
+      </div>
       <figure class="viewer-frame">
         <img id="viewer-image" alt="" />
         <figcaption>
           <time id="viewer-time"></time>
-          <span id="viewer-count" class="viewer-count"></span>
         </figcaption>
       </figure>
       <div class="viewer-controls">
-        <button type="button" class="btn btn-quiet" id="viewer-prev">Previous</button>
-        <button type="button" class="btn btn-quiet" id="viewer-next">Next</button>
-        <button type="button" class="btn btn-quiet" id="viewer-close">Close</button>
+        <button type="button" class="btn" id="viewer-prev">Previous</button>
+        <span class="hint">Arrow keys work too</span>
+        <button type="button" class="btn" id="viewer-next">Next</button>
       </div>
     </dialog>
 

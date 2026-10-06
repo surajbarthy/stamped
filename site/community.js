@@ -5,6 +5,7 @@ const viewer = document.querySelector("#viewer");
 const viewerImage = document.querySelector("#viewer-image");
 const viewerTime = document.querySelector("#viewer-time");
 const viewerCount = document.querySelector("#viewer-count");
+const tally = document.querySelector("#tally");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 let stamps = [];
@@ -94,7 +95,7 @@ function showInViewer(index) {
   viewerImage.src = stamp.image;
   viewerTime.dateTime = new Date(stamp.createdAt).toISOString();
   viewerTime.textContent = formatWhen(stamp.createdAt);
-  viewerCount.textContent = `${openIndex + 1} of ${stamps.length}${isSample(stamp) ? " · sample" : ""}`;
+  viewerCount.textContent = `${openIndex + 1} of ${stamps.length}${isSample(stamp) ? " (sample)" : ""}`;
 }
 
 function openViewer(index) {
@@ -116,8 +117,9 @@ async function load() {
     : [];
   const samples = stamps.filter(isSample).length;
   note.textContent = samples
-    ? `${samples === stamps.length ? "All" : samples} of these are samples, so the wall is never empty.`
+    ? `${samples === stamps.length ? "All" : samples} of these are samples, so the wall is never empty. They say Sample under the picture.`
     : "";
+  tally.textContent = stamps.length === 1 ? "1 picture" : `${stamps.length} pictures`;
   shuffleButton.disabled = stamps.length < 2;
   render(stamps);
 }

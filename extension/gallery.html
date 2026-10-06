@@ -3,85 +3,97 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="dark" />
+    <meta name="color-scheme" content="light" />
     <title>Gallery · Slop Stamp</title>
     <link rel="stylesheet" href="gallery.css" />
   </head>
   <body>
-    <header class="nav">
-      <p class="logo">Slop Stamp</p>
-      <a class="nav-link" id="community-link" href="http://127.0.0.1:8787/community.html" target="_blank" rel="noreferrer">See the wall</a>
-    </header>
+    <div class="page">
+      <header class="masthead">
+        <p class="logo">Slop Stamp</p>
+        <a id="community-link" href="http://127.0.0.1:8787/community.html" target="_blank" rel="noreferrer">See the wall</a>
+      </header>
 
-    <main>
-      <section class="intro">
-        <h1>Yours, until you share it.</h1>
-        <div class="intro-side">
-          <p id="summary">Saved stamps live on this browser.</p>
-          <p class="quiet">The wall only gets a picture and a time.</p>
-          <div class="tools" id="tools">
-            <button type="button" id="export" class="link-btn">Export backup</button>
-            <button type="button" id="delete-all" class="link-btn link-danger">Delete all</button>
-          </div>
-          <div class="confirm" id="delete-all-confirm" hidden>
-            <p id="delete-all-question">Delete every saved picture?</p>
-            <button type="button" class="btn btn-danger" id="delete-all-yes">Delete all</button>
-            <button type="button" class="btn btn-quiet" id="delete-all-no">Keep them</button>
-          </div>
+      <main class="window">
+        <div class="titlebar">
+          <h1>Your gallery</h1>
+          <span id="tally" class="tally"></span>
         </div>
-      </section>
+        <div class="window-body">
+          <div class="intro">
+            <div>
+              <p class="lead">Yours, until you share it.</p>
+              <p id="summary">Saved stamps live on this browser.</p>
+              <p class="quiet">The wall only gets a picture and a time.</p>
+            </div>
+            <div class="tools" id="tools">
+              <button type="button" id="export" class="btn">Export backup</button>
+              <button type="button" id="delete-all" class="btn btn-danger">Delete all</button>
+            </div>
+          </div>
+          <div class="confirm" id="delete-all-confirm" role="alertdialog" aria-labelledby="delete-all-question" hidden>
+            <p id="delete-all-question">Delete every saved picture?</p>
+            <div class="confirm-row">
+              <button type="button" class="btn btn-danger" id="delete-all-yes">Delete all</button>
+              <button type="button" class="btn" id="delete-all-no">Keep them</button>
+            </div>
+          </div>
 
-      <div id="grid" class="grid"></div>
-    </main>
+          <div id="grid" class="grid"></div>
+        </div>
+      </main>
+    </div>
 
     <dialog id="viewer" class="viewer" aria-labelledby="viewer-title">
-      <div class="viewer-image">
-        <img id="viewer-img" alt="" />
+      <div class="titlebar">
+        <p class="viewer-count">Picture <span id="viewer-count"></span></p>
+        <button type="button" class="btn btn-small" id="viewer-close">Close</button>
       </div>
-      <aside class="viewer-panel">
-        <div class="viewer-head">
-          <p class="viewer-count" id="viewer-count"></p>
-          <button type="button" class="btn btn-quiet btn-small" id="viewer-close">Close</button>
+      <div class="viewer-body">
+        <div class="viewer-image">
+          <img id="viewer-img" alt="" />
         </div>
-        <h2 id="viewer-title"></h2>
-        <a id="viewer-url" class="viewer-url" target="_blank" rel="noreferrer"></a>
-        <p id="viewer-meta" class="viewer-meta"></p>
+        <aside class="viewer-panel">
+          <h2 id="viewer-title"></h2>
+          <a id="viewer-url" class="viewer-url" target="_blank" rel="noreferrer"></a>
+          <p id="viewer-meta" class="viewer-meta"></p>
 
-        <div class="viewer-actions">
-          <div id="post-area">
-            <button type="button" class="btn btn-wide" id="post">Post to the wall</button>
-            <div class="confirm confirm-stack" id="post-confirm" hidden>
-              <p>Anyone who opens the wall will see this picture and the time. The page address and title stay here. You can't take a post back from the gallery.</p>
-              <div class="confirm-row">
-                <button type="button" class="btn" id="post-yes">Post it</button>
-                <button type="button" class="btn btn-quiet" id="post-no">Cancel</button>
+          <div class="viewer-actions">
+            <div id="post-area">
+              <button type="button" class="btn btn-primary btn-wide" id="post">Post to the wall</button>
+              <div class="confirm" id="post-confirm" hidden>
+                <p>Anyone who opens the wall will see this picture and the time. The page address and title stay here. You can't take a post back from the gallery.</p>
+                <div class="confirm-row">
+                  <button type="button" class="btn btn-primary" id="post-yes">Post it</button>
+                  <button type="button" class="btn" id="post-no">Cancel</button>
+                </div>
+              </div>
+            </div>
+            <div class="confirm-row">
+              <button type="button" class="btn" id="download">Download</button>
+              <button type="button" class="btn" id="share">Share</button>
+            </div>
+            <div id="delete-area">
+              <button type="button" class="link-btn" id="delete">Delete this picture</button>
+              <div class="confirm" id="delete-confirm" hidden>
+                <p>Delete this picture from the gallery?</p>
+                <div class="confirm-row">
+                  <button type="button" class="btn btn-danger" id="delete-yes">Delete</button>
+                  <button type="button" class="btn" id="delete-no">Keep it</button>
+                </div>
               </div>
             </div>
           </div>
-          <div class="confirm-row">
-            <button type="button" class="btn btn-quiet" id="download">Download</button>
-            <button type="button" class="btn btn-quiet" id="share">Share</button>
-          </div>
-          <div id="delete-area">
-            <button type="button" class="link-btn link-danger" id="delete">Delete this picture</button>
-            <div class="confirm confirm-stack" id="delete-confirm" hidden>
-              <p>Delete this picture from the gallery?</p>
-              <div class="confirm-row">
-                <button type="button" class="btn btn-danger" id="delete-yes">Delete</button>
-                <button type="button" class="btn btn-quiet" id="delete-no">Keep it</button>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <div class="viewer-nav">
-          <button type="button" class="btn btn-quiet btn-small" id="viewer-prev">Previous</button>
-          <button type="button" class="btn btn-quiet btn-small" id="viewer-next">Next</button>
-        </div>
-      </aside>
+          <div class="viewer-nav">
+            <button type="button" class="btn" id="viewer-prev">Previous</button>
+            <button type="button" class="btn" id="viewer-next">Next</button>
+          </div>
+        </aside>
+      </div>
     </dialog>
 
-    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <div class="statusbar" id="toast" role="status" aria-live="polite"></div>
 
     <script src="gallery.js"></script>
   </body>

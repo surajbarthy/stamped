@@ -3,6 +3,7 @@ const COMMUNITY_ORIGIN = "http://127.0.0.1:8787";
 
 const grid = document.querySelector("#grid");
 const summary = document.querySelector("#summary");
+const tally = document.querySelector("#tally");
 const tools = document.querySelector("#tools");
 const deleteAllConfirm = document.querySelector("#delete-all-confirm");
 const deleteAllQuestion = document.querySelector("#delete-all-question");
@@ -66,6 +67,7 @@ async function loadShots() {
 }
 
 function renderSummary() {
+  tally.textContent = plural(shots.length, "picture");
   if (shots.length === 0) {
     summary.textContent = "Saved stamps live on this browser.";
     return;
