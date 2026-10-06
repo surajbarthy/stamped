@@ -556,3 +556,39 @@ a.btn-primary:visited {
   height: 48px;
   transform: rotate(-8deg);
 }
+
+/* Add to Chrome: in the header, and as a band at the bottom of the page. */
+.btn-store.btn-small .chrome-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+}
+
+.install-band {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-top: 28px;
+  padding: 18px 20px;
+  border: 2px solid var(--ink);
+  background: var(--note, #ffff99);
+  box-shadow: 6px 6px 0 var(--ink);
+}
+
+.install-band p {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  .install-band {
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+
+  .masthead-tools .btn-store {
+    display: none;
+  }
+}
