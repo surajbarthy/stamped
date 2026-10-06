@@ -87,12 +87,22 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 28px 24px;
-  align-items: start;
+  align-items: stretch;
+}
+
+.home-columns > .window {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-columns .window-body {
+  flex: 1;
+  font-size: 18px;
 }
 
 .moves {
   display: grid;
-  gap: 12px;
+  gap: 10px;
   margin: 0;
   padding-left: 1.6em;
 }
@@ -103,9 +113,14 @@
 }
 
 .share {
-  display: grid;
-  justify-items: start;
-  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.share .btn {
+  margin-top: auto;
 }
 
 .share p {
