@@ -42,26 +42,16 @@
   margin-top: 8px;
 }
 
-/* The one ring on the page: the mark itself, as it lands. */
+/* The stamp, as it lands on a page. */
 .hero-mark {
-  display: grid;
-  place-content: center;
-  width: 180px;
-  height: 180px;
-  border: 6px double var(--stamp);
-  border-radius: 50%;
-  color: var(--stamp);
-  font-size: 34px;
-  font-weight: 700;
-  line-height: 1;
-  text-align: center;
-  text-transform: uppercase;
+  width: 190px;
   transform: rotate(-12deg);
 }
 
-.hero-mark span + span {
-  font-size: 30px;
-  text-transform: lowercase;
+.hero-stamp {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .shots {

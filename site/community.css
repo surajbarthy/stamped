@@ -531,3 +531,17 @@ a.btn-primary:visited {
   height: 20px;
   margin-right: 8px;
 }
+
+/* The stamp itself is the logo: same ring, bar and words as the mark on a page. */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-mark {
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  transform: rotate(-8deg);
+}
