@@ -26,7 +26,7 @@
   --shade: #6b6b6b;
   --stamp: #e10600;
   /* A touch darker than the stamp so link text passes contrast on paper. */
-  --link: #c40500;
+  --link: var(--stamp);
   --font: "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", cursive;
 }
 
