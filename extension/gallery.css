@@ -25,6 +25,8 @@
   --light: #ffffff;
   --shade: #6b6b6b;
   --stamp: #e10600;
+  /* A touch darker than the stamp so link text passes contrast on paper. */
+  --link: #c40500;
   --danger-ink: #b00400;
   --note: #ffff99;
   --font: "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", cursive;
@@ -97,18 +99,19 @@ p {
   display: none !important;
 }
 
-/* Links in text: ink with a red underline, all red on hover, and the same
+/* Links in text: red with a red underline, black on hover, and the same
    once visited. Nav links drop the underline; the wavy red line only ever
    marks the current page. */
 a,
 a:visited {
-  color: var(--ink);
-  text-decoration: underline 2px var(--stamp);
+  color: var(--link);
+  text-decoration: underline 2px var(--link);
   text-underline-offset: 3px;
 }
 
 a:hover {
-  color: var(--stamp);
+  color: var(--ink);
+  text-decoration-color: var(--ink);
 }
 
 .page {
