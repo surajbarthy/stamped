@@ -162,7 +162,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message?.type === "stamped:delete") {
     deleteCaptures(message.ids)
       .then(() => sendResponse({ ok: true }))
-      .catch((error) => sendResponse({ ok: false, error: error?.message || "Couldn't delete that stamp." }));
+      .catch((error) => sendResponse({ ok: false, error: error?.message || "Couldn't delete that picture." }));
     return true;
   }
 

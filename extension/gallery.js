@@ -3,7 +3,6 @@ const INDEX_KEY = "stamped:index";
 const MAX_POST_CHARS = 5_200_000;
 
 const grid = document.querySelector("#grid");
-const summary = document.querySelector("#summary");
 const tally = document.querySelector("#tally");
 const tools = document.querySelector("#tools");
 const deleteAllConfirm = document.querySelector("#delete-all-confirm");
@@ -29,12 +28,26 @@ const coverCanvas = document.querySelector("#cover-canvas");
 const coverCount = document.querySelector("#cover-count");
 const coverUndo = document.querySelector("#cover-undo");
 const toast = document.querySelector("#toast");
+const notPostedNote = document.querySelector("#not-posted");
 
 let shots = [];
 let openId = null;
 let toastTimer = null;
 const posting = new Set();
 const AGREED_KEY = "stamped:wall-rules-agreed";
+
+// Where each posted picture stands on the wall, checked with the post's own key.
+const wallStatus = new Map();
+const STATUS_LABELS = {
+  pending: "Waiting for review",
+  published: "On the wall",
+  hidden: "Hidden while we check a report",
+};
+let lastStatusCheck = 0;
+
+// Deleting waits a few seconds so it can be undone.
+const UNDO_MS = 5000;
+const pendingDeletes = new Map();
 
 // Covers are boxes in 0..1 image coordinates, so they survive resizes.
 let covers = [];
@@ -57,11 +70,68 @@ function plural(count, word) {
   return `${count} ${word}${count === 1 ? "" : "s"}`;
 }
 
-function showToast(text) {
+// The status bar is a popover so it shows above the picture viewer, which is a
+// modal dialog, and its Undo button can still be pressed.
+function hideToast() {
+  toast.classList.remove("is-visible");
+  toastTimer = window.setTimeout(() => {
+    if (toast.matches(":popover-open")) toast.hidePopover();
+  }, 200);
+}
+
+function showToast(text, action) {
   window.clearTimeout(toastTimer);
-  toast.textContent = text;
-  toast.classList.add("is-visible");
-  toastTimer = window.setTimeout(() => toast.classList.remove("is-visible"), 3200);
+  toast.replaceChildren(text);
+  if (action) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "link-btn toast-action";
+    button.textContent = action.label;
+    button.addEventListener("click", () => {
+      window.clearTimeout(toastTimer);
+      hideToast();
+      action.run();
+    });
+    toast.append(" ", button);
+  }
+  // Reopening puts it on top of anything opened since.
+  if (toast.matches(":popover-open")) toast.hidePopover();
+  toast.showPopover();
+  requestAnimationFrame(() => toast.classList.add("is-visible"));
+  toastTimer = window.setTimeout(hideToast, action ? UNDO_MS : 3200);
+}
+
+function statusLabel(shot) {
+  return STATUS_LABELS[wallStatus.get(shot.id)] || "Posted";
+}
+
+async function checkWallStatuses() {
+  if (Date.now() - lastStatusCheck < 10_000) return;
+  lastStatusCheck = Date.now();
+  const posted = shots.filter((shot) => shot.wallId && shot.wallDeleteToken);
+  await Promise.all(
+    posted.map(async (shot) => {
+      let response;
+      try {
+        response = await fetch(`${COMMUNITY_ORIGIN}/api/stamps/${encodeURIComponent(shot.wallId)}/status`, {
+          headers: { Authorization: `Bearer ${shot.wallDeleteToken}` },
+        });
+      } catch {
+        return;
+      }
+      if (response.status === 404) {
+        // Turned down or deleted: free the picture so it can be posted again.
+        wallStatus.delete(shot.id);
+        await updateRecord(shot.id, { sharedAt: undefined, wallId: undefined, wallDeleteToken: undefined, notPosted: true });
+        return;
+      }
+      if (!response.ok) return;
+      const payload = await response.json().catch(() => null);
+      if (payload?.status) wallStatus.set(shot.id, payload.status);
+    })
+  );
+  renderGrid();
+  if (viewer.open) renderViewer();
 }
 
 async function readIndex() {
@@ -75,21 +145,26 @@ async function loadShots() {
     ? await chrome.storage.local.get(index.map((item) => imageKey(item.id)))
     : {};
 
-  shots = index.map((item) => ({
-    ...item,
-    image: images[imageKey(item.id)] || "",
-  }));
+  shots = index
+    .filter((item) => !pendingDeletes.has(item.id))
+    .map((item) => ({
+      ...item,
+      image: images[imageKey(item.id)] || "",
+    }));
+}
+
+function setStat(id, count, word) {
+  document.querySelector(`#${id}`).textContent = String(count);
+  document.querySelector(`#${id}-label`).textContent = count === 1 ? word : `${word}s`;
 }
 
 function renderSummary() {
   tally.textContent = plural(shots.length, "picture");
-  if (shots.length === 0) {
-    summary.textContent = "Saved stamps live on this browser.";
-    return;
-  }
   const sites = new Set(shots.map((shot) => shot.hostname).filter(Boolean)).size;
   const stamps = shots.reduce((sum, shot) => sum + (shot.stampCount || 0), 0);
-  summary.textContent = `${plural(shots.length, "picture")} from ${plural(sites, "site")}, with ${plural(stamps, "stamp")} between them. All of it lives on this browser.`;
+  setStat("stat-shots", shots.length, "picture");
+  setStat("stat-sites", sites, "site");
+  setStat("stat-stamps", stamps, "stamp");
 }
 
 function renderGrid() {
@@ -121,10 +196,11 @@ function renderGrid() {
     image.alt = "";
     image.decoding = "async";
     frame.append(image);
-    if (shot.sharedAt) {
+    const tagText = shot.sharedAt ? statusLabel(shot) : shot.notPosted ? "Not posted" : "";
+    if (tagText) {
       const tag = document.createElement("span");
       tag.className = "tile-tag";
-      tag.textContent = "On the wall";
+      tag.textContent = tagText;
       frame.append(tag);
     }
 
@@ -136,7 +212,7 @@ function renderGrid() {
     meta.textContent = `${plural(shot.stampCount || 0, "stamp")} · ${formatWhen(shot.createdAt)}`;
     caption.append(title, meta);
 
-    tile.setAttribute("aria-label", `${title.textContent}, ${meta.textContent}${shot.sharedAt ? ", on the wall" : ""}`);
+    tile.setAttribute("aria-label", `${title.textContent}, ${meta.textContent}${tagText ? `, ${tagText.toLowerCase()}` : ""}`);
     tile.append(frame, caption);
     tile.addEventListener("click", () => openViewer(shot.id));
     grid.append(tile);
@@ -192,6 +268,7 @@ function drawCovers() {
     context.strokeRect(box.x * width, box.y * height, box.w * width, box.h * height);
   }
   coverCount.textContent = covers.length === 0 ? "Nothing covered yet." : `${plural(covers.length, "spot")} covered.`;
+  coverCount.classList.toggle("is-empty", covers.length === 0);
   coverUndo.disabled = covers.length === 0;
 }
 
@@ -275,7 +352,7 @@ function renderViewer() {
   if (!shot) return;
 
   viewerImg.src = shot.image;
-  viewerImg.alt = `Screenshot of ${shot.pageTitle || shot.hostname || "a stamped page"}`;
+  viewerImg.alt = `Picture of ${shot.pageTitle || shot.hostname || "a stamped page"}`;
   viewerTitle.textContent = shot.pageTitle || shot.hostname || "Untitled page";
   viewerUrl.textContent = shot.pageUrl || "";
   viewerUrl.hidden = !shot.pageUrl;
@@ -290,17 +367,17 @@ function renderViewer() {
   postNote.hidden = posted;
   if (!posted) placeCanvas();
   if (posted) {
-    postButton.textContent = `Posted ${formatWhen(shot.sharedAt)}`;
+    postButton.textContent = `${statusLabel(shot)} · posted ${formatWhen(shot.sharedAt)}`;
     postButton.disabled = true;
   } else {
     postButton.textContent = isPosting ? "Posting…" : "Post to the wall";
     postButton.disabled = isPosting || !postAgree.checked;
   }
+  notPostedNote.hidden = posted || !shot.notPosted;
   unpostButton.hidden = !posted || !shot.wallId || !unpostConfirm.hidden;
   if (!posted) unpostConfirm.hidden = true;
-  deleteQuestion.textContent = shot.sharedAt
-    ? "Delete this picture from the gallery? It stays on the wall, and you won't be able to remove it from here afterwards."
-    : "Delete this picture from the gallery?";
+  deleteQuestion.textContent =
+    "Delete this picture from the gallery? It stays on the wall, and you won't be able to take it down from here afterwards.";
 }
 
 function openViewer(id) {
@@ -372,10 +449,11 @@ async function postToWall(shot) {
     const result = await response.json();
     posting.delete(shot.id);
     clearCovers();
-    await updateRecord(shot.id, { sharedAt: Date.now(), wallId: result.id, wallDeleteToken: result.deleteToken });
+    wallStatus.set(shot.id, result.status);
+    await updateRecord(shot.id, { sharedAt: Date.now(), wallId: result.id, wallDeleteToken: result.deleteToken, notPosted: undefined });
     showToast(
       result.status === "pending"
-        ? "Sent. It shows on the wall once a person checks it."
+        ? "Posted. It shows on the wall once a person checks it."
         : "Posted. The wall shows the picture and the time."
     );
   } catch (error) {
@@ -398,12 +476,12 @@ async function removeFromWall(shot) {
     } catch {
       throw new Error("Couldn't reach the wall. Check your connection, then try again.");
     }
-    if (!response.ok) throw await errorFrom(response, "Couldn't remove it from the wall.");
+    if (!response.ok) throw await errorFrom(response, "Couldn't take it down from the wall.");
     unpostConfirm.hidden = true;
     await updateRecord(shot.id, { sharedAt: undefined, wallId: undefined, wallDeleteToken: undefined });
-    showToast("Removed from the wall.");
+    showToast("Taken down from the wall.");
   } catch (error) {
-    showToast(error?.message || "Couldn't remove it from the wall.");
+    showToast(error?.message || "Couldn't take it down from the wall.");
   } finally {
     unpostYes.disabled = false;
   }
@@ -471,7 +549,7 @@ document.querySelector("#export").addEventListener("click", () => {
     link.download = `stamped-${day}.json`;
     link.click();
     window.setTimeout(() => URL.revokeObjectURL(url), 1500);
-    showToast("Exported a backup. It includes page addresses, so keep it to yourself.");
+    showToast("Downloaded every picture in one file. It includes page addresses, so keep it to yourself.");
   } catch (error) {
     showToast(error?.message || "Couldn't export.");
   }
@@ -520,7 +598,48 @@ unpostYes.addEventListener("click", () => {
   if (shot) void removeFromWall(shot);
 });
 
+function deleteWithUndo(id) {
+  const index = shots.findIndex((item) => item.id === id);
+  const next = shots[index + 1] || shots[index - 1];
+  const timer = window.setTimeout(() => {
+    pendingDeletes.delete(id);
+    void deleteShots([id]);
+  }, UNDO_MS);
+  pendingDeletes.set(id, timer);
+  if (next) openViewer(next.id);
+  else closeViewer();
+  window.addEventListener("focus", () => void checkWallStatuses());
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") void checkWallStatuses();
+});
+
+void refresh().then(() => checkWallStatuses());
+  showToast("Deleted.", {
+    label: "Undo",
+    run: () => {
+      window.clearTimeout(pendingDeletes.get(id));
+      pendingDeletes.delete(id);
+      void refresh();
+    },
+  });
+}
+
+// Finish any waiting deletes if the gallery closes before Undo runs out.
+window.addEventListener("pagehide", () => {
+  if (pendingDeletes.size === 0) return;
+  const ids = [...pendingDeletes.keys()];
+  pendingDeletes.clear();
+  void deleteShots(ids);
+});
+
 deleteButton.addEventListener("click", () => {
+  const shot = currentShot();
+  if (!shot) return;
+  // A posted picture can only be taken down from here, so ask first.
+  if (!shot.sharedAt) {
+    deleteWithUndo(shot.id);
+    return;
+  }
   deleteButton.hidden = true;
   deleteConfirm.hidden = false;
   document.querySelector("#delete-no").focus();
@@ -530,15 +649,8 @@ document.querySelector("#delete-no").addEventListener("click", () => {
   deleteButton.hidden = false;
   deleteButton.focus();
 });
-document.querySelector("#delete-yes").addEventListener("click", async () => {
-  if (!openId) return;
-  const index = shots.findIndex((item) => item.id === openId);
-  const next = shots[index + 1] || shots[index - 1];
-  const removed = openId;
-  if (next) openViewer(next.id);
-  else closeViewer();
-  await deleteShots([removed]);
-  showToast("Deleted.");
+document.querySelector("#delete-yes").addEventListener("click", () => {
+  if (openId) deleteWithUndo(openId);
 });
 
 document.querySelector("#download").addEventListener("click", () => {

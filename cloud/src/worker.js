@@ -162,6 +162,17 @@ async function removeOwnStamp(request, env, id) {
   return json(200, { ok: true });
 }
 
+// Lets the poster's gallery show where a post stands. A post that was
+// turned down or deleted is gone, so it answers 404.
+async function ownStampStatus(request, env, id) {
+  const token = bearer(request);
+  if (!token) return fail(401, "Missing the key for that post.");
+  const row = await env.DB.prepare("SELECT status, delete_hash FROM stamps WHERE id = ?").bind(id).first();
+  if (!row) return fail(404, "That post isn't on the wall.");
+  if (!sameText(row.delete_hash, await sha256Hex(token))) return fail(403, "That key doesn't match this post.");
+  return json(200, { status: row.status });
+}
+
 async function deleteStamp(env, id) {
   await env.DB.prepare("DELETE FROM stamps WHERE id = ?").bind(id).run();
   await env.MEDIA.delete(id);
@@ -303,6 +314,7 @@ async function handleApi(request, env, url) {
   }
   if (!isId(id)) return fail(404, "Not found.");
   if (request.method === "DELETE" && parts.length === 3) return removeOwnStamp(request, env, id);
+  if (request.method === "GET" && parts[3] === "status" && parts.length === 4) return ownStampStatus(request, env, id);
   if (request.method === "POST" && parts[3] === "report" && parts.length === 4) return reportStamp(request, env, id);
   return fail(405, "Not allowed.");
 }

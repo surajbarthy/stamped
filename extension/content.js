@@ -327,12 +327,12 @@
 
     const img = document.createElement("img");
     img.src = image;
-    img.alt = "Saved stamp";
+    img.alt = "Saved picture";
 
     const remove = document.createElement("button");
     remove.type = "button";
     remove.className = "thumb-delete";
-    remove.setAttribute("aria-label", "Delete this screenshot");
+    remove.setAttribute("aria-label", "Delete this picture");
     remove.textContent = "×";
     remove.addEventListener("click", () => {
       void deleteThumb(id, item);
@@ -346,13 +346,13 @@
     try {
       const response = await chrome.runtime.sendMessage({ type: "stamped:delete", ids: [id] });
       if (!response?.ok) {
-        setStatus(response?.error || "Couldn't delete that stamp.");
+        setStatus(response?.error || "Couldn't delete that picture.");
         return;
       }
       item.remove();
       setStatus("Removed");
     } catch {
-      setStatus("Couldn't delete that stamp.");
+      setStatus("Couldn't delete that picture.");
     }
   }
 
@@ -394,19 +394,19 @@
         pageTitle: document.title,
       });
       if (!response?.ok || !response.id) {
-        setStatus(response?.error || "Couldn't save this stamp.");
+        setStatus(response?.error || "Couldn't save this picture.");
         return;
       }
       const key = `stamped:shot:${response.id}`;
       const stored = await chrome.storage.local.get(key);
       if (!stored[key]) {
-        setStatus("Couldn't save this stamp.");
+        setStatus("Couldn't save this picture.");
         return;
       }
       addThumb(response.id, stored[key]);
       setStatus("Saved");
     } catch {
-      setStatus("Couldn't save this stamp.");
+      setStatus("Couldn't save this picture.");
     } finally {
       state.bar.classList.remove("stamped-bar-hidden");
     }

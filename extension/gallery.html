@@ -27,12 +27,16 @@
         <div class="window-body">
           <div class="intro">
             <div>
-              <p class="lead">Yours, until you share it.</p>
-              <p id="summary">Saved stamps live on this browser.</p>
-              <p class="quiet">The wall only gets a picture and a time.</p>
+              <p class="lead">Only you can see these.</p>
+              <section class="stats" aria-label="What's saved">
+                <p class="stat"><strong id="stat-shots">0</strong> <span id="stat-shots-label">pictures</span></p>
+                <p class="stat"><strong id="stat-sites">0</strong> <span id="stat-sites-label">sites</span></p>
+                <p class="stat stat-stamps"><strong id="stat-stamps">0</strong> <span id="stat-stamps-label">stamps</span></p>
+              </section>
+              <p class="quiet">All of it lives on this browser. The wall only gets a picture and a time.</p>
             </div>
             <div class="tools" id="tools">
-              <button type="button" id="export" class="btn">Export backup</button>
+              <button type="button" id="export" class="btn">Download all</button>
               <button type="button" id="delete-all" class="btn btn-danger">Delete all</button>
             </div>
           </div>
@@ -72,12 +76,13 @@
                 <label class="post-agree" id="post-agree-row"><input type="checkbox" id="post-agree" /> <span>No private people or their info is in this, and my stamp is my opinion. <a id="rules-link" href="#" target="_blank" rel="noreferrer">Wall rules</a></span></label>
               </div>
               <button type="button" class="btn btn-primary btn-wide" id="post">Post to the wall</button>
+              <p class="post-note not-posted" id="not-posted" hidden>This one didn't go on the wall, or it was taken down. You can post it again.</p>
               <p class="post-note" id="post-note">Only the picture and the time are sent. A person checks it before it shows.</p>
-              <button type="button" class="link-btn" id="unpost" hidden>Remove from the wall</button>
+              <button type="button" class="link-btn" id="unpost" hidden>Take it down from the wall</button>
               <div class="confirm" id="unpost-confirm" hidden>
                 <p>Take this picture off the wall? It's deleted from the server. Your saved copy stays here.</p>
                 <div class="confirm-row">
-                  <button type="button" class="btn btn-danger" id="unpost-yes">Remove it</button>
+                  <button type="button" class="btn btn-danger" id="unpost-yes">Take it down</button>
                   <button type="button" class="btn" id="unpost-no">Keep it up</button>
                 </div>
               </div>
@@ -106,7 +111,7 @@
       </div>
     </dialog>
 
-    <div class="statusbar" id="toast" role="status" aria-live="polite"></div>
+    <div class="statusbar" id="toast" role="status" aria-live="polite" popover="manual"></div>
 
     <script src="config.js"></script>
     <script src="gallery.js"></script>
