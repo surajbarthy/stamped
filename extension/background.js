@@ -95,7 +95,7 @@ async function getSaveEnabled() {
 async function setBadge(tabId, active) {
   await chrome.action.setBadgeText({ tabId, text: active ? "ON" : "" });
   if (active) {
-    await chrome.action.setBadgeBackgroundColor({ tabId, color: "#d63232" });
+    await chrome.action.setBadgeBackgroundColor({ tabId, color: "#e10600" });
   }
 }
 
@@ -137,7 +137,7 @@ async function showBlocked(tabId) {
     await chrome.action.openPopup();
   } catch {
     await chrome.action.setBadgeText({ tabId, text: "!" }).catch(() => {});
-    await chrome.action.setBadgeBackgroundColor({ tabId, color: "#d63232" }).catch(() => {});
+    await chrome.action.setBadgeBackgroundColor({ tabId, color: "#e10600" }).catch(() => {});
   } finally {
     // The next click should try stamping again, not reopen the popup.
     await chrome.action.setPopup({ tabId, popup: "" }).catch(() => {});
