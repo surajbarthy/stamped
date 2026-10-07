@@ -62,19 +62,41 @@ assert.equal(media.status, 200);
 assert.equal(media.headers.get("Content-Type"), "image/jpeg");
 step("approved post is on the wall with only id, time and picture");
 
+const report = (stampId, reason) =>
+  call(`/api/stamps/${stampId}/report`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(reason ? { reason } : {}),
+  });
+
+// No reason counts as "other": three of those hide a post.
 for (let count = 0; count < 3; count += 1) {
-  assert.equal((await call(`/api/stamps/${id}/report`, { method: "POST" })).status, 200);
+  assert.equal((await report(id)).status, 200);
 }
 assert.ok(!(await wallIds()).includes(id));
-const hidden = await call("/api/admin/stamps?status=hidden", { headers: admin });
-assert.ok(hidden.body.stamps.some((item) => item.id === id && item.reports === 3));
-step("three reports hide a post");
+let hidden = await call("/api/admin/stamps?status=hidden", { headers: admin });
+assert.ok(hidden.body.stamps.some((item) => item.id === id && item.reasons.other === 3));
+step("three other reports hide a post");
+
+assert.equal((await act(id, "approve")).status, 200);
+for (let count = 0; count < 3; count += 1) {
+  assert.equal((await report(id, "other")).status, 200);
+}
+assert.ok((await wallIds()).includes(id));
+step("other reports can't hide a post you cleared");
+
+const serious = await report(id, "private");
+assert.equal(serious.status, 200);
+assert.equal(serious.body.hidden, true);
+assert.ok(!(await wallIds()).includes(id));
+hidden = await call("/api/admin/stamps?status=hidden", { headers: admin });
+assert.ok(hidden.body.stamps.some((item) => item.id === id && item.reasons.private === 1));
+assert.equal((await report("no-such-post", "harmful")).status, 404);
+step("one private-info report hides it at once");
 
 assert.equal((await act(id, "approve")).status, 200);
 assert.ok((await wallIds()).includes(id));
-assert.equal((await call(`/api/stamps/${id}/report`, { method: "POST" })).status, 200);
-assert.ok((await wallIds()).includes(id));
-step("approving again clears the reports");
+step("approving puts it back");
 
 assert.equal((await call(`/api/stamps/${id}`, { method: "DELETE" })).status, 401);
 assert.equal((await call(`/api/stamps/${id}`, { method: "DELETE", headers: { Authorization: "Bearer nope" } })).status, 403);

@@ -65,7 +65,17 @@
         <figcaption>
           <time id="viewer-time"></time>
           <button type="button" class="link-btn" id="viewer-report">Report this picture</button>
+          <span class="report-done" id="report-done" role="status" hidden></span>
         </figcaption>
+        <div class="report-box" id="report-box" role="group" aria-labelledby="report-question" hidden>
+          <p id="report-question"><strong>Why are you reporting it?</strong></p>
+          <div class="report-choices">
+            <button type="button" class="btn btn-small" data-reason="private">It's me / shows private info</button>
+            <button type="button" class="btn btn-small" data-reason="harmful">Sexual, violent or illegal</button>
+            <button type="button" class="btn btn-small" data-reason="other">Not slop / other</button>
+            <button type="button" class="link-btn" id="report-cancel">Cancel</button>
+          </div>
+        </div>
       </figure>
       <div class="viewer-controls">
         <button type="button" class="btn" id="viewer-prev">Previous</button>

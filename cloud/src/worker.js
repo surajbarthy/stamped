@@ -167,17 +167,30 @@ async function deleteStamp(env, id) {
   await env.MEDIA.delete(id);
 }
 
+const REPORT_REASONS = ["private", "harmful", "other"];
+
 async function reportStamp(request, env, id) {
   if (await overLimit(env.REPORT_LIMITER, request)) {
     return fail(429, "Too many reports in a row. Wait a minute and try again.");
   }
-  const threshold = Math.max(1, Number(env.REPORTS_TO_HIDE || 3));
-  await env.DB.prepare(
-    "UPDATE stamps SET reports = reports + 1, status = CASE WHEN status = 'published' AND reports + 1 >= ? THEN 'hidden' ELSE status END WHERE id = ?"
+  const body = await request.json().catch(() => ({}));
+  // Older pages send no reason; count those as "other".
+  const reason = REPORT_REASONS.includes(body?.reason) ? body.reason : "other";
+  const threshold = Math.max(1, Math.floor(Number(env.REPORTS_TO_HIDE) || 3));
+  const column = `${reason}_reports`;
+  // Private-info and harmful reports hide a live post straight away. "Other"
+  // reports hide it at the threshold, unless a moderator already cleared it.
+  const hides =
+    reason === "other" ? `status = 'published' AND cleared = 0 AND other_reports + 1 >= ${threshold}` : "status = 'published'";
+  const row = await env.DB.prepare(
+    `UPDATE stamps SET reports = reports + 1, ${column} = ${column} + 1,
+       status = CASE WHEN ${hides} THEN 'hidden' ELSE status END
+     WHERE id = ? RETURNING status`
   )
-    .bind(threshold, id)
-    .run();
-  return json(200, { ok: true });
+    .bind(id)
+    .first();
+  if (!row) return fail(404, "That picture isn't on the wall.");
+  return json(200, { ok: true, hidden: row.status === "hidden" });
 }
 
 // Every request checks the post is still published, so a hidden or removed
@@ -210,7 +223,7 @@ async function adminList(env, url) {
   const status = url.searchParams.get("status") || "pending";
   if (!["pending", "published", "hidden"].includes(status)) return fail(400, "Unknown status.");
   const { results } = await env.DB.prepare(
-    "SELECT id, created_at, posted_at, status, reports FROM stamps WHERE status = ? ORDER BY posted_at DESC LIMIT ?"
+    "SELECT id, created_at, posted_at, status, reports, private_reports, harmful_reports, other_reports, cleared FROM stamps WHERE status = ? ORDER BY posted_at DESC LIMIT ?"
   )
     .bind(status, ADMIN_LIMIT)
     .all();
@@ -224,6 +237,8 @@ async function adminList(env, url) {
       postedAt: row.posted_at,
       status: row.status,
       reports: row.reports,
+      reasons: { private: row.private_reports, harmful: row.harmful_reports, other: row.other_reports },
+      cleared: Boolean(row.cleared),
     })),
   });
 }
@@ -244,12 +259,13 @@ async function adminAct(request, env, id) {
   }
   const next = { approve: "published", hide: "hidden" }[body.action];
   if (!next) return fail(400, "Unknown action.");
-  // Approving clears earlier reports so a restored post doesn't hide again on the next one.
-  await env.DB.prepare(
-    "UPDATE stamps SET status = ?, reports = CASE WHEN ? = 'published' THEN 0 ELSE reports END WHERE id = ?"
-  )
-    .bind(next, next, id)
-    .run();
+  // Approving clears earlier reports. Approving a post that was reported or
+  // hidden also marks it cleared, so "other" reports can't hide it again.
+  const statement =
+    next === "published"
+      ? "UPDATE stamps SET cleared = CASE WHEN reports > 0 OR status = 'hidden' THEN 1 ELSE cleared END, status = ?, reports = 0, private_reports = 0, harmful_reports = 0, other_reports = 0 WHERE id = ?"
+      : "UPDATE stamps SET status = ? WHERE id = ?";
+  await env.DB.prepare(statement).bind(next, id).run();
   return json(200, { ok: true, status: next });
 }
 
