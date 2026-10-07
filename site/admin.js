@@ -88,6 +88,16 @@ function actionButton(label, action, id, danger = false) {
   return button;
 }
 
+const REASON_LABELS = { private: "private info", harmful: "sexual, violent or illegal", other: "other" };
+
+function reportSummary(stamp) {
+  if (!stamp.reports) return "";
+  const parts = Object.entries(stamp.reasons || {})
+    .filter(([, count]) => count > 0)
+    .map(([reason, count]) => `${count} ${REASON_LABELS[reason] || reason}`);
+  return ` · reported: ${parts.length ? parts.join(", ") : stamp.reports}`;
+}
+
 function render(payload) {
   for (const url of objectUrls.splice(0)) URL.revokeObjectURL(url);
   const counts = payload.counts || {};
@@ -95,7 +105,7 @@ function render(payload) {
   modeBox.checked = payload.mode === "approve-first";
   note.textContent = {
     pending: "Nothing here shows on the wall until you approve it.",
-    published: "Live on the wall now. Three reports hide a post until you look at it.",
+    published: "Live on the wall now. One private-info or harmful report hides a post; other reports take three, and none once you've cleared it.",
     hidden: "Hidden by you or by reports. Approve to put one back.",
   }[status];
 
@@ -120,7 +130,7 @@ function render(payload) {
     link.append(img);
     const meta = document.createElement("p");
     meta.className = "admin-meta";
-    meta.textContent = `Stamped ${formatWhen(stamp.createdAt)} · posted ${formatWhen(stamp.postedAt)}${stamp.reports ? ` · ${stamp.reports} report${stamp.reports === 1 ? "" : "s"}` : ""}`;
+    meta.textContent = `Stamped ${formatWhen(stamp.createdAt)} · posted ${formatWhen(stamp.postedAt)}${reportSummary(stamp)}${stamp.cleared ? " · cleared by you" : ""}`;
     const actions = document.createElement("div");
     actions.className = "admin-actions";
     if (stamp.status !== "published") actions.append(actionButton("Approve", "approve", stamp.id));

@@ -497,6 +497,36 @@ a.btn-primary:visited {
   display: none;
 }
 
+.report-done {
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.report-done[hidden],
+.report-box[hidden] {
+  display: none;
+}
+
+.report-box {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 2px solid var(--ink);
+  background: var(--note, #ffff99);
+}
+
+.report-box p {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.report-choices {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+}
+
 .viewer-controls {
   display: flex;
   align-items: center;

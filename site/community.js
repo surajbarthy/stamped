@@ -7,11 +7,14 @@ const viewerTime = document.querySelector("#viewer-time");
 const viewerCount = document.querySelector("#viewer-count");
 const tally = document.querySelector("#tally");
 const reportButton = document.querySelector("#viewer-report");
+const reportBox = document.querySelector("#report-box");
+const reportDone = document.querySelector("#report-done");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 let stamps = [];
 let openIndex = -1;
-const reported = new Set();
+// Reported pictures and the confirmation each one showed.
+const reported = new Map();
 
 function formatWhen(timestamp) {
   return new Date(timestamp).toLocaleString([], {
@@ -98,23 +101,45 @@ function showInViewer(index) {
   viewerTime.dateTime = new Date(stamp.createdAt).toISOString();
   viewerTime.textContent = formatWhen(stamp.createdAt);
   viewerCount.textContent = `${openIndex + 1} of ${stamps.length}${isSample(stamp) ? " (sample)" : ""}`;
-  reportButton.hidden = isSample(stamp);
-  reportButton.disabled = reported.has(stamp.id);
-  reportButton.textContent = reported.has(stamp.id) ? "Reported. Thanks." : "Report this picture";
+  reportBox.hidden = true;
+  reportButton.textContent = "Report this picture";
+  reportButton.hidden = isSample(stamp) || reported.has(stamp.id);
+  reportDone.hidden = !reported.has(stamp.id);
+  reportDone.textContent = reported.get(stamp.id) || "";
 }
 
-async function reportOpen() {
+function openReport() {
+  reportButton.hidden = true;
+  reportBox.hidden = false;
+  reportBox.querySelector("button").focus();
+}
+
+function closeReport() {
+  reportBox.hidden = true;
+  reportButton.hidden = false;
+  reportButton.focus();
+}
+
+async function sendReport(reason) {
   const stamp = stamps[openIndex];
   if (!stamp || reported.has(stamp.id)) return;
-  reportButton.disabled = true;
+  const choices = reportBox.querySelectorAll("button");
+  choices.forEach((button) => (button.disabled = true));
   try {
-    const response = await fetch(`/api/stamps/${encodeURIComponent(stamp.id)}/report`, { method: "POST" });
+    const response = await fetch(`/api/stamps/${encodeURIComponent(stamp.id)}/report`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ reason }),
+    });
     if (!response.ok) throw new Error();
-    reported.add(stamp.id);
-    reportButton.textContent = "Reported. Thanks.";
+    const result = await response.json();
+    reported.set(stamp.id, result.hidden ? "Reported. It's hidden while we check it." : "Reported. Thanks.");
+    showInViewer(openIndex);
   } catch {
-    reportButton.disabled = false;
     reportButton.textContent = "Couldn't send that. Try again.";
+    closeReport();
+  } finally {
+    choices.forEach((button) => (button.disabled = false));
   }
 }
 
@@ -171,7 +196,17 @@ shuffleButton.addEventListener("click", () => {
 
 document.querySelector("#viewer-prev").addEventListener("click", () => showInViewer(openIndex - 1));
 document.querySelector("#viewer-next").addEventListener("click", () => showInViewer(openIndex + 1));
-reportButton.addEventListener("click", () => void reportOpen());
+reportButton.addEventListener("click", openReport);
+document.querySelector("#report-cancel").addEventListener("click", closeReport);
+for (const button of reportBox.querySelectorAll("[data-reason]")) {
+  button.addEventListener("click", () => void sendReport(button.dataset.reason));
+}
+// Esc backs out of the report choices before it closes the viewer.
+viewer.addEventListener("cancel", (event) => {
+  if (reportBox.hidden) return;
+  event.preventDefault();
+  closeReport();
+});
 document.querySelector("#viewer-close").addEventListener("click", () => viewer.close());
 viewer.addEventListener("click", (event) => {
   if (event.target === viewer) viewer.close();
@@ -181,6 +216,14 @@ viewer.addEventListener("keydown", (event) => {
   if (event.key === "ArrowRight") showInViewer(openIndex + 1);
 });
 viewer.addEventListener("close", () => {
+  // Drop pictures the reporter's report just hid, so they leave the wall too.
+  const hidden = stamps.filter((stamp) => reported.get(stamp.id)?.includes("hidden"));
+  if (hidden.length) {
+    stamps = stamps.filter((stamp) => !hidden.includes(stamp));
+    tally.textContent = stamps.length === 1 ? "1 picture" : `${stamps.length} pictures`;
+    render(stamps);
+    return;
+  }
   const tile = grid.children[openIndex];
   if (tile instanceof HTMLElement) tile.focus();
 });
