@@ -24,8 +24,6 @@
   --face: #e4e1d8;
   --light: #ffffff;
   --shade: #6b6b6b;
-  --link: #0000ee;
-  --visited: #551a8b;
   --stamp: #e10600;
   --font: "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", cursive;
 }
@@ -56,13 +54,14 @@ body {
   outline-offset: 3px;
 }
 
-a {
-  color: var(--link);
-  text-underline-offset: 3px;
-}
-
+/* Links in text: ink with a red underline, all red on hover, and the same
+   once visited. Nav links drop the underline; the wavy red line only ever
+   marks the current page. */
+a,
 a:visited {
-  color: var(--visited);
+  color: var(--ink);
+  text-decoration: underline 2px var(--stamp);
+  text-underline-offset: 3px;
 }
 
 a:hover {
