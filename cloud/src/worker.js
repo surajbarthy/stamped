@@ -318,6 +318,10 @@ export default {
         if (!isId(id) || request.method !== "GET") return new Response("Not found", { status: 404 });
         return await serveMedia(env, id);
       }
+      // The wall used to live at /community.
+      if (url.pathname === "/community" || url.pathname === "/community.html") {
+        return Response.redirect(`${url.origin}/wall${url.search}`, 301);
+      }
       return env.ASSETS.fetch(request);
     } catch (error) {
       console.error(error);

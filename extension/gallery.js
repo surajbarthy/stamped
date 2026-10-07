@@ -571,7 +571,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
   if (area === "local" && changes[INDEX_KEY]) void refresh();
 });
 
-document.querySelector("#community-link").href = `${COMMUNITY_ORIGIN}/community.html`;
+document.querySelector("#wall-link").href = `${COMMUNITY_ORIGIN}/wall`;
 document.querySelector("#rules-link").href = `${COMMUNITY_ORIGIN}/rules.html`;
 try {
   postAgree.checked = localStorage.getItem(AGREED_KEY) === "1";

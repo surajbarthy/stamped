@@ -20,8 +20,19 @@
     }
   }
 
+  // The stamping bar on web pages can't read this page's localStorage, so the
+  // choice is copied to extension storage too.
+  function share(font) {
+    try {
+      chrome.storage.local.set({ [KEY]: font }).catch(() => {});
+    } catch {
+      // Not running as an extension page.
+    }
+  }
+
   // Runs in <head>, before the page paints, so there is no flash of the other font.
   apply(read());
+  share(read());
 
   document.addEventListener("DOMContentLoaded", () => {
     apply(read());
@@ -34,6 +45,7 @@
           // Storage can be blocked; the switch still works for this page.
         }
         apply(next);
+        share(next);
       });
     }
   });
