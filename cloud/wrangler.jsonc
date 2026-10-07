@@ -1,6 +1,6 @@
 {
   // Slop Stamp: the public site, the wall, and its API on one Worker.
-  // DEPLOY.md walks through filling in the two ids and the domain below.
+  // Live at slopstamp.xyz. DEPLOY.md covers setting this up from scratch.
   "name": "slop-stamp",
   "main": "src/worker.js",
   "compatibility_date": "2026-09-01",
@@ -14,8 +14,7 @@
     {
       "binding": "DB",
       "database_name": "stamped",
-      // Replace with the id printed by `npx wrangler d1 create stamped`.
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "081e02e9-8017-421e-8309-f96079ce1036",
       "migrations_dir": "migrations"
     }
   ],
@@ -40,7 +39,9 @@
   "vars": {
     "REPORTS_TO_HIDE": "3",
     "MAX_PENDING": "300"
-  }
-  // Uncomment and set your domain once it is on Cloudflare.
-  // "routes": [{ "pattern": "stamp.example.com", "custom_domain": true }]
+  },
+  "routes": [
+    { "pattern": "slopstamp.xyz", "custom_domain": true },
+    { "pattern": "www.slopstamp.xyz", "custom_domain": true }
+  ]
 }
