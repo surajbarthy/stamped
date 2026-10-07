@@ -17,6 +17,7 @@
     else delete root.dataset.font;
     for (const button of document.querySelectorAll("[data-font-toggle]")) {
       button.setAttribute("aria-pressed", String(font === "plain"));
+      button.title = font === "plain" ? "Switch back to Comic Sans" : "Switch to a plain font";
     }
   }
 
