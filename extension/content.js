@@ -48,6 +48,14 @@
     .count { font-weight: 700; white-space: nowrap; }
     .hint, .status { color: #555; font-size: 14px; white-space: nowrap; }
     .status { color: #e10600; font-weight: 700; }
+    /* Same yellow note as the demo on slopstamp.xyz. */
+    .status.note {
+      padding: 3px 10px;
+      border: 2px solid #111;
+      background: #ffff99;
+      color: #111;
+      font-size: 15px;
+    }
     [hidden] { display: none !important; }
     button {
       box-sizing: border-box;
@@ -145,9 +153,10 @@
     return count === 1 ? "1 stamp" : `${count} stamps`;
   }
 
-  function setStatus(text) {
+  function setStatus(text, kind = "error") {
     window.clearTimeout(state.statusTimer);
     state.status.textContent = text;
+    state.status.classList.toggle("note", kind === "note");
     state.status.hidden = !text;
     if (text) {
       state.statusTimer = window.setTimeout(() => {
@@ -350,7 +359,7 @@
         return;
       }
       item.remove();
-      setStatus("Removed");
+      setStatus("Deleted", "note");
     } catch {
       setStatus("Couldn't delete that picture.");
     }
@@ -404,7 +413,7 @@
         return;
       }
       addThumb(response.id, stored[key]);
-      setStatus("Saved");
+      setStatus("Saved to your gallery", "note");
     } catch {
       setStatus("Couldn't save this picture.");
     } finally {

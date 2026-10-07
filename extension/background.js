@@ -125,9 +125,24 @@ chrome.action.onClicked.addListener(async (tab) => {
     if (active === null) return;
     await setBadge(tab.id, active);
   } catch {
-    // Restricted pages such as chrome:// cannot be stamped.
+    // Chrome doesn't let extensions run on chrome:// pages, the Web Store and
+    // a few others. Say so in a small popup instead of doing nothing.
+    await showBlocked(tab.id);
   }
 });
+
+async function showBlocked(tabId) {
+  try {
+    await chrome.action.setPopup({ tabId, popup: "blocked.html" });
+    await chrome.action.openPopup();
+  } catch {
+    await chrome.action.setBadgeText({ tabId, text: "!" }).catch(() => {});
+    await chrome.action.setBadgeBackgroundColor({ tabId, color: "#d63232" }).catch(() => {});
+  } finally {
+    // The next click should try stamping again, not reopen the popup.
+    await chrome.action.setPopup({ tabId, popup: "" }).catch(() => {});
+  }
+}
 
 function askToggle(tabId) {
   return chrome.tabs

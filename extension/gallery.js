@@ -70,13 +70,10 @@ function plural(count, word) {
   return `${count} ${word}${count === 1 ? "" : "s"}`;
 }
 
-// The status bar is a popover so it shows above the picture viewer, which is a
-// modal dialog, and its Undo button can still be pressed.
+// While the picture viewer (a modal dialog) is open, the rest of the page
+// can't be clicked, so the status bar moves inside it to keep Undo usable.
 function hideToast() {
   toast.classList.remove("is-visible");
-  toastTimer = window.setTimeout(() => {
-    if (toast.matches(":popover-open")) toast.hidePopover();
-  }, 200);
 }
 
 function showToast(text, action) {
@@ -94,9 +91,8 @@ function showToast(text, action) {
     });
     toast.append(" ", button);
   }
-  // Reopening puts it on top of anything opened since.
-  if (toast.matches(":popover-open")) toast.hidePopover();
-  toast.showPopover();
+  const home = viewer.open ? viewer : document.body;
+  if (toast.parentElement !== home) home.append(toast);
   requestAnimationFrame(() => toast.classList.add("is-visible"));
   toastTimer = window.setTimeout(hideToast, action ? UNDO_MS : 3200);
 }
@@ -673,6 +669,7 @@ viewer.addEventListener("keydown", (event) => {
   if (event.key === "ArrowRight") step(1);
 });
 viewer.addEventListener("close", () => {
+  if (toast.parentElement === viewer) document.body.append(toast);
   const tile = grid.querySelector(`[data-id="${CSS.escape(openId || "")}"]`);
   openId = null;
   viewerImg.removeAttribute("src");

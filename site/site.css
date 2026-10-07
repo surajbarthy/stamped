@@ -621,6 +621,20 @@ a.btn-primary:visited {
   font-weight: 700;
 }
 
+/* Phones can't add Chrome extensions, so say where it works. */
+.install-band .mobile-note {
+  display: none;
+  flex-basis: 100%;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .install-band .mobile-note {
+    display: block;
+  }
+}
+
 @media (max-width: 720px) {
   .install-band {
     box-shadow: 2px 2px 0 var(--ink);
