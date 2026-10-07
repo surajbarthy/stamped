@@ -25,8 +25,6 @@
   --light: #ffffff;
   --shade: #6b6b6b;
   --stamp: #e10600;
-  /* A touch darker than the stamp so link text passes contrast on paper. */
-  --link: var(--stamp);
   --font: "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", cursive;
 }
 
@@ -67,8 +65,8 @@ body {
    marks the current page. */
 a,
 a:visited {
-  color: var(--link);
-  text-decoration: underline 2px var(--link);
+  color: var(--stamp);
+  text-decoration: underline 2px var(--stamp);
   text-underline-offset: 3px;
 }
 

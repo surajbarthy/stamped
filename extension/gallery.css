@@ -25,9 +25,6 @@
   --light: #ffffff;
   --shade: #6b6b6b;
   --stamp: #e10600;
-  /* A touch darker than the stamp so link text passes contrast on paper. */
-  --link: var(--stamp);
-  --danger-ink: #b00400;
   --note: #ffff99;
   --font: "Comic Sans MS", "Comic Sans", "Comic Neue", "Chalkboard SE", cursive;
 }
@@ -104,8 +101,8 @@ p {
    marks the current page. */
 a,
 a:visited {
-  color: var(--link);
-  text-decoration: underline 2px var(--link);
+  color: var(--stamp);
+  text-decoration: underline 2px var(--stamp);
   text-underline-offset: 3px;
 }
 
@@ -292,7 +289,7 @@ h1 {
 }
 
 .btn-danger {
-  color: var(--danger-ink);
+  color: var(--stamp);
 }
 
 .btn-small {
@@ -309,7 +306,7 @@ h1 {
   padding: 2px 0;
   border: 0;
   background: none;
-  color: var(--danger-ink);
+  color: var(--stamp);
   font: inherit;
   font-size: 16px;
   text-decoration: underline;
@@ -648,7 +645,7 @@ h1 {
 }
 
 .cover-count.is-empty {
-  color: var(--danger-ink);
+  color: var(--stamp);
 }
 
 .not-posted {
