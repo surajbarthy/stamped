@@ -3,119 +3,29 @@ html.stamped-active * {
   cursor: crosshair !important;
 }
 
-html.stamped-active .stamped-bar,
-html.stamped-active .stamped-bar * {
+html.stamped-active .stamped-bar {
   cursor: default !important;
 }
 
+/* The bar lives in a shadow root (see content.js), so page styles can't
+   reach it. Only its position is set here. */
 .stamped-bar {
+  all: initial;
   position: fixed;
   top: 12px;
   left: 50%;
   z-index: 2147483647;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 8px;
-  box-sizing: border-box;
   max-width: calc(100vw - 24px);
-  padding: 8px 10px 8px 14px;
-  border-radius: 20px;
-  background: #1c1917;
-  color: #faf7f2;
-  box-shadow: 0 10px 28px rgba(28, 25, 23, 0.28);
-  font-family: ui-sans-serif, system-ui, sans-serif;
-  font-size: 13px;
-  line-height: 1.2;
   pointer-events: auto;
   transform: translateX(-50%);
 }
 
-.stamped-controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+.stamped-bar-closed {
+  display: none !important;
 }
 
 .stamped-bar-hidden {
   visibility: hidden !important;
-}
-
-.stamped-count {
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.stamped-hint,
-.stamped-status {
-  color: #d6d0c6;
-  font-size: 12px;
-  white-space: nowrap;
-}
-
-.stamped-bar button {
-  border: 0;
-  border-radius: 999px;
-  padding: 6px 10px;
-  font: inherit;
-  font-weight: 700;
-}
-
-.stamped-bar button:disabled {
-  opacity: 0.6;
-}
-
-.stamped-gallery,
-.stamped-save[aria-pressed="false"] {
-  background: transparent;
-  color: #faf7f2;
-  box-shadow: inset 0 0 0 1px rgba(250, 247, 242, 0.35);
-}
-
-.stamped-save[aria-pressed="true"] {
-  background: #faf7f2;
-  color: #1c1917;
-}
-
-.stamped-thumbs {
-  display: flex;
-  gap: 6px;
-  max-width: min(560px, calc(100vw - 48px));
-  overflow-x: auto;
-}
-
-.stamped-thumbs:empty {
-  display: none;
-}
-
-.stamped-thumb {
-  position: relative;
-  flex: 0 0 auto;
-}
-
-.stamped-thumb img {
-  display: block;
-  width: 76px;
-  height: 48px;
-  object-fit: cover;
-  border-radius: 6px;
-  background: #3a342e;
-}
-
-.stamped-bar .stamped-thumb-delete {
-  position: absolute;
-  top: 3px;
-  right: 3px;
-  width: 18px;
-  height: 18px;
-  padding: 0;
-  border-radius: 50%;
-  background: rgba(28, 25, 23, 0.88);
-  color: #fff;
-  font-size: 13px;
-  line-height: 18px;
 }
 
 .stamped-mark {

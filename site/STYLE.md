@@ -1,6 +1,6 @@
 # Site style
 
-Standing reference for the marketing page and the community wall. Check a visual change against the projects, not against the portfolio's own layout.
+Standing reference for the marketing page and the wall. Check a visual change against the projects, not against the portfolio's own layout.
 
 ## Concepts
 

@@ -2,9 +2,9 @@
 
 Don't like AI slop? Show it with a stamp. Stamp it anywhere you see it.
 
-Slop Stamp is a Chrome extension. You turn it on, click something on a page that looks machine-made, and a red **AI slop** mark lands on it. Each stamp can save a picture of the page. Those pictures stay on your browser until you choose to download one, share one, or send one to the community wall.
+Slop Stamp is a Chrome extension. You turn it on, click something on a page that looks machine-made, and a red **AI slop** mark lands on it. Each stamp can save a picture of the page. Those pictures stay on your browser until you choose to download one, share one, or send one to the wall.
 
-There are no accounts. A community post is only the picture and the time it was taken. The page address, the page title, and anything that identifies you stay on this computer.
+There are no accounts. A wall post is only the picture and the time it was taken. The page address, the page title, and anything that identifies you stay on this computer.
 
 ## What you can do
 
@@ -16,7 +16,7 @@ There are no accounts. A community post is only the picture and the time it was 
 While stamp mode is on, a bar sits at the top of the page:
 
 - A live count of stamps on this visit.
-- **Saving on / Saving off.** Saving is on by default and the choice is remembered. With saving off, stamps still land, but no picture is taken.
+- **Save to gallery.** A checkbox in the bar, on by default, and the choice is remembered. With it off, stamps still land, but no picture is taken.
 - **Gallery.** Opens the private gallery in a tab.
 - Thumbnails of the pictures taken during this visit. Delete a thumbnail and that picture is removed from the gallery too.
 
@@ -33,7 +33,7 @@ From a picture you can:
 - Open it full size.
 - Download it.
 - Share the image through the system share sheet, or copy it if that is not available.
-- Send it to the community wall, after blacking out anything private in it.
+- Send it to the wall, after blacking out anything private in it.
 - Take it back off the wall.
 - Delete it, or delete every saved picture.
 - Export a JSON backup. That file includes the page addresses and titles, because it is a local backup, not a public post.
@@ -56,7 +56,7 @@ npm run dev
 
 `npm run dev` creates the local database tables and a local admin key the first time. The old `python3 site/server.py` is gone; this replaces it.
 
-Then open http://127.0.0.1:8787/ for the site, http://127.0.0.1:8787/community for the wall, and http://127.0.0.1:8787/admin (key `local-admin-key`) to approve posts. To have the unpacked extension post there, set `COMMUNITY_ORIGIN` in `extension/config.js` to `http://127.0.0.1:8787`. `cloud/DEPLOY.md` covers putting it on a real domain.
+Then open http://127.0.0.1:8787/ for the site, http://127.0.0.1:8787/wall for the wall, and http://127.0.0.1:8787/admin (key `local-admin-key`) to approve posts. To have the unpacked extension post there, set `COMMUNITY_ORIGIN` in `extension/config.js` to `http://127.0.0.1:8787`. `cloud/DEPLOY.md` covers putting it on a real domain.
 
 ## Install the extension
 
@@ -88,7 +88,7 @@ The extension has no popup, so clicking the icon goes straight to the background
 ## Layout of the repo
 
 - `extension/` — Manifest V3 extension: stamp mode, local gallery, icons.
-- `site/` — marketing page, community wall, moderation page and privacy policy (static files).
+- `site/` — marketing page, the wall, moderation page and privacy policy (static files).
 - `cloud/` — the Cloudflare Worker that serves `site/` and the wall API, its database schema, tests, and `DEPLOY.md`.
 - `store/LISTING.md` — Chrome Web Store listing text, permission reasons and privacy answers.
 - `PLAN.md` — build log of what shipped and what is still waiting.
