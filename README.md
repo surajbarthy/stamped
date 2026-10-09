@@ -8,9 +8,9 @@ There are no accounts. A wall post is only the picture and the time it was taken
 
 ## What you can do
 
-1. Click the Slop Stamp toolbar icon. The cursor becomes a crosshair and the toolbar badge says ON.
+1. Click the Slop Stamp toolbar icon, or press Alt+Shift+S (Option+Shift+S on a Mac). The cursor becomes a crosshair and the toolbar badge says ON.
 2. Click the part of the page you want to mark. A red stamp appears there, with the time under it.
-3. Press Esc, or click the icon again, to leave stamp mode. The stamps and the bar stay until you leave or refresh the page.
+3. Press Esc, click the icon again, or press the shortcut again to leave stamp mode. You can change the shortcut at `chrome://extensions/shortcuts`. The stamps and the bar stay until you leave or refresh the page.
 4. Open Gallery from the bar to see every saved picture.
 
 While stamp mode is on, a bar sits at the top of the page:
@@ -68,7 +68,7 @@ This is an unpacked extension. It is not in the Chrome Web Store yet. The **Add 
 4. The wall address is in `extension/config.js`. It points at the local Worker until you change it.
 5. After code changes, click the reload button on the extension card, then refresh any tabs that were already open.
 
-The extension asks for no site access up front. Clicking the icon gives it access to that one tab until the tab navigates away, which is enough to stamp and take pictures there. The icon click works on normal `http` and `https` pages. It does not run on `chrome://` pages, and a click inside a cross-origin iframe does not place a stamp.
+The extension asks for no site access up front. Clicking the icon (or pressing the shortcut) gives it access to that one tab until the tab navigates away, which is enough to stamp and take pictures there. The icon click works on normal `http` and `https` pages. It does not run on `chrome://` pages, and a click inside a cross-origin iframe does not place a stamp.
 
 ## How the pieces fit
 
