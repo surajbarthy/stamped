@@ -664,9 +664,20 @@ document.querySelector("#viewer-next").addEventListener("click", () => step(1));
 viewer.addEventListener("click", (event) => {
   if (event.target === viewer) closeViewer();
 });
-viewer.addEventListener("keydown", (event) => {
-  if (event.key === "ArrowLeft") step(-1);
-  if (event.key === "ArrowRight") step(1);
+// Arrow keys flip pictures. Listen on the whole page: clicking the picture
+// leaves nothing focused inside the viewer, and keys then go to the body.
+function typingIn(target) {
+  if (!(target instanceof HTMLElement)) return false;
+  if (target.isContentEditable || target instanceof HTMLTextAreaElement) return true;
+  return target instanceof HTMLInputElement && !["checkbox", "radio", "button"].includes(target.type);
+}
+document.addEventListener("keydown", (event) => {
+  if (!viewer.open || drag || typingIn(event.target)) return;
+  if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+  const offset = { ArrowLeft: -1, ArrowRight: 1 }[event.key];
+  if (!offset) return;
+  event.preventDefault();
+  step(offset);
 });
 viewer.addEventListener("close", () => {
   if (toast.parentElement === viewer) document.body.append(toast);

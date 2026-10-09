@@ -616,6 +616,19 @@ h1 {
   flex: 1;
 }
 
+.viewer-keys {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+}
+
+@media (hover: none) {
+  .viewer-keys {
+    display: none;
+  }
+}
+
 /* Status bar, like the one at the bottom of an old browser window. */
 
 .statusbar {

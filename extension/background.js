@@ -118,8 +118,8 @@ async function openGallery() {
   galleryTabId = created.id ?? null;
 }
 
-chrome.action.onClicked.addListener(async (tab) => {
-  if (!tab.id) return;
+async function toggleFromUser(tab) {
+  if (!tab?.id) return;
   try {
     const active = await toggleTab(tab.id);
     if (active === null) return;
@@ -129,6 +129,16 @@ chrome.action.onClicked.addListener(async (tab) => {
     // a few others. Say so in a small popup instead of doing nothing.
     await showBlocked(tab.id);
   }
+}
+
+chrome.action.onClicked.addListener(toggleFromUser);
+
+// The keyboard shortcut (Alt+Shift+S unless changed in
+// chrome://extensions/shortcuts) does the same as clicking the icon.
+chrome.commands.onCommand.addListener(async (command, tab) => {
+  if (command !== "toggle-stamping") return;
+  const target = tab ?? (await chrome.tabs.query({ active: true, currentWindow: true }))[0];
+  await toggleFromUser(target);
 });
 
 async function showBlocked(tabId) {
