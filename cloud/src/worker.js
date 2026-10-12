@@ -5,6 +5,7 @@
 // the poster is stored: no IP address, no account, no page address.
 
 import { inspectImage, stripMetadata } from "./image.js";
+import { checkPending } from "./notify.js";
 
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
 const MAX_BODY_BYTES = 6 * 1024 * 1024;
@@ -339,5 +340,9 @@ export default {
       console.error(error);
       return fail(500, "Something went wrong on the wall.");
     }
+  },
+
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(checkPending(env, event.scheduledTime));
   },
 };
