@@ -58,6 +58,16 @@ Open `https://stamp.yourdomain.com/admin`, paste the admin key, and you'll see t
 
 Then `npm run deploy` again so the privacy page update goes live.
 
+## Email when posts are waiting
+
+Every 15 minutes the Worker checks for new posts waiting under **Waiting**. If any arrived since its last email, it sends one note to your inbox, at most once an hour however many come in. The address is a secret, so it isn't in the repo.
+
+1. In Cloudflare, **Email > Email Routing > Destination addresses**: your inbox must be listed as **Verified** (it already is if `report@` forwards there).
+2. From `cloud/`: `npx wrangler secret put NOTIFY_TO` and paste that inbox address.
+3. `npm run deploy`.
+
+The email comes from `wall@` your domain (`NOTIFY_FROM` in `wrangler.jsonc`); it doesn't need its own routing rule. Change `NOTIFY_EVERY_MINUTES` there for more or fewer emails. Without the `NOTIFY_TO` secret nothing is sent.
+
 ## Moderating
 
 - New posts wait under **Waiting** until you approve them. Nothing is public before that.
