@@ -39,9 +39,10 @@ html.stamped-active .stamped-bar {
   height: 124px;
   box-sizing: border-box;
   overflow: hidden;
-  border: 0;
+  /* A border, not a gradient stop, so Chrome smooths the ring's edges. */
+  border: 9px solid #e10600;
   border-radius: 50%;
-  background: radial-gradient(circle at center, #fff 53px, #e10600 53px);
+  background: #fff;
   color: #111;
   font-family: "Comic Sans MS", "Comic Sans", "Chalkboard SE", cursive;
   pointer-events: none;

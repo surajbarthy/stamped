@@ -316,7 +316,8 @@ function loadImage(src) {
 }
 
 // Redraws the picture with the covers burned in. Re-encoding also leaves any
-// file metadata behind. Big screenshots are scaled down until they fit the wall.
+// file metadata behind. PNG goes as is when it fits; otherwise a high-quality
+// JPEG, scaled down until it fits the wall.
 async function composePost(shot) {
   const image = await loadImage(shot.image);
   let scale = 1;
@@ -335,7 +336,11 @@ async function composePost(shot) {
         Math.ceil(box.h * canvas.height)
       );
     }
-    const dataUrl = canvas.toDataURL("image/jpeg", 0.82);
+    if (attempt === 0) {
+      const png = canvas.toDataURL("image/png");
+      if (png.length <= MAX_POST_CHARS) return png;
+    }
+    const dataUrl = canvas.toDataURL("image/jpeg", 0.92);
     if (dataUrl.length <= MAX_POST_CHARS) return dataUrl;
     scale *= 0.75;
   }

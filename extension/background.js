@@ -37,7 +37,8 @@ async function saveCapture(tab, stampCount, pageUrl, pageTitle) {
     throw new Error("This page can't be captured.");
   }
 
-  const options = { format: "jpeg", quality: 75 };
+  // PNG keeps the red stamp edges sharp; JPEG smears them.
+  const options = { format: "png" };
   let dataUrl;
   try {
     dataUrl = await chrome.tabs.captureVisibleTab(tab.windowId, options);
