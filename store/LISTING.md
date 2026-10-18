@@ -21,16 +21,21 @@ Stamp AI slop where you see it. Keep a private gallery of what you stamped, and 
 
 **Description:**
 
-Don't like AI slop? Show it with a stamp.
+Stamp AI slop where you see it
 
-Click the Slop Stamp icon on any page, then click the slop. A red AI slop stamp lands on it, and a picture of the page goes into your private gallery.
+Click the Slop Stamp icon, then click anything on the page that looks like AI slop. A red stamp lands on it, and a picture of the page goes into your gallery. Press Esc or click the icon again to stop.
 
-- Stamp anything on a normal web page. Press Esc or click the icon again to stop.
-- Every stamp saves a picture of the page, with the mark in it. Turn saving off when you only want to mark.
-- Your gallery lives on this browser only. Download a picture, share it, or delete it.
-- Post a picture to the public wall at slopstamp.xyz if you want. Before it goes, you can black out anything private, like a name or an inbox. The wall gets only the picture and the time, and you can take it down again from your gallery.
+Your private gallery
 
-No accounts, no tracking, no ads. The extension only runs on a tab after you click its icon there.
+Every stamp saves a picture of the page with the stamp in it. The gallery lives only in this browser. Download a picture, share it, or delete it. Turn saving off when you only want to mark.
+
+The public wall
+
+If you want, post a picture to the wall at slopstamp.xyz. Before it goes, black out anything private, like a name or an inbox. The wall gets only the picture and the time, and a person checks it before it shows. You can take it down from your gallery at any time.
+
+Privacy assurance
+
+No accounts, no tracking, no ads. Slop Stamp only runs on a tab after you click its icon there, and page addresses and titles never leave your device.
 
 **Homepage URL:** https://slopstamp.xyz
 **Support URL:** mailto:report@slopstamp.xyz (or the privacy page)
