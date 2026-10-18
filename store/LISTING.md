@@ -42,7 +42,7 @@ No accounts. No names. A picture and a time.
 
 **Images** (all in `store/images/`):
 - Store icon (128×128): `store-icon-128.png`. The stamp at 96×96 with 16px clear space, per the icon guidelines.
-- Screenshots (1280×800, no alpha), in this order: `screenshot-1-stamp.png`, `screenshot-2-gallery.png`, `screenshot-3-cover-up.png`, `screenshot-4-wall.png`.
+- Screenshots (1280×800, no alpha), in this order: `screenshot-1-stamp.png`, `screenshot-2-gallery.png`, `screenshot-3-cover-up.png`, `screenshot-4-wall.png`, `screenshot-5-home.png`. Each has a one-line caption in Comic Sans over the real UI.
 - Small promo tile (440×280): `small-promo-440x280.png`.
 - Marquee promo tile (1400×560): `marquee-promo-1400x560.png`.
 
