@@ -6,6 +6,7 @@
 
 import { inspectImage, stripMetadata } from "./image.js";
 import { checkPending } from "./notify.js";
+import { SAMPLES, SAMPLES_UNTIL } from "./samples.js";
 
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
 const MAX_BODY_BYTES = 6 * 1024 * 1024;
@@ -96,7 +97,9 @@ async function listWall(env) {
   )
     .bind(WALL_LIMIT)
     .all();
-  return json(200, results.map(wallEntry), { "Cache-Control": "public, max-age=30" });
+  const entries = results.map(wallEntry);
+  if (entries.length < SAMPLES_UNTIL) entries.push(...SAMPLES);
+  return json(200, entries, { "Cache-Control": "public, max-age=30" });
 }
 
 async function createStamp(request, env) {
