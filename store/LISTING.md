@@ -7,7 +7,7 @@ Everything the developer dashboard asks for, ready to paste.
 - Register as a Chrome Web Store developer at https://chrome.google.com/webstore/devconsole (one-time $5 fee).
 - Deploy the wall and set `COMMUNITY_ORIGIN` in `extension/config.js` (see `cloud/DEPLOY.md`).
 - Bump `version` in `extension/manifest.json` for every upload.
-- Zip the extension folder's contents: `cd extension && zip -r ../slop-stamp.zip . -x '.*'`
+- Zip the extension folder's contents, so `manifest.json` sits at the top of the zip: `cd extension && zip -r ../slop-stamp.zip . -x '.*'`
 - Optional but worth it: verify your domain in the dashboard (Account > Verified publisher) so the listing shows it as the official site.
 
 ## Store listing tab
@@ -15,35 +15,38 @@ Everything the developer dashboard asks for, ready to paste.
 **Name:** Slop Stamp
 
 **Summary (132 characters max):**
-Stamp AI slop where you see it. Keep a private gallery of what you stamped, and post the best ones to a public wall.
+Don't like AI slop? Show it with a stamp. Keep a private gallery, and post the best ones to a public wall.
 
 **Category:** Fun (or Social & Communication)
 
 **Description:**
 
-Stamp AI slop where you see it
+Don't like AI slop? Show it with a stamp.
 
-Click the Slop Stamp icon, then click anything on the page that looks like AI slop. A red stamp lands on it, and a picture of the page goes into your gallery. Press Esc or click the icon again to stop.
+Click the icon, click the slop, and a red mark lands right on it. Every stamp keeps a picture in your private gallery. Post the best ones to the wall.
 
-Your private gallery
+How it works
+1. Click the icon, then the slop.
+2. A stamp lands and a picture saves to your gallery.
+3. Press Esc when you're done.
+4. Post the best ones to the wall at slopstamp.xyz, where others see them.
 
-Every stamp saves a picture of the page with the stamp in it. The gallery lives only in this browser. Download a picture, share it, or delete it. Turn saving off when you only want to mark.
+Yours, until you share it
+Your pictures stay on your computer, in this browser. Nothing is uploaded unless you post it.
+Before you post one to the wall, black out anything private, like a name or an email. The wall gets only the picture and the time, and you can take it down from your gallery.
 
-The public wall
-
-If you want, post a picture to the wall at slopstamp.xyz. Before it goes, black out anything private, like a name or an inbox. The wall gets only the picture and the time, and a person checks it before it shows. You can take it down from your gallery at any time.
-
-Privacy assurance
-
-No accounts, no tracking, no ads. Slop Stamp only runs on a tab after you click its icon there, and page addresses and titles never leave your device.
+No accounts. No names. A picture and a time.
 
 **Homepage URL:** https://slopstamp.xyz
 **Support URL:** mailto:report@slopstamp.xyz (or the privacy page)
 
-**Images:**
-- Icon: `extension/icons/icon128.png`
-- Screenshots: 1 to 5 at 1280×800 or 640×400. Suggested: a stamped page with the bar, the gallery grid, the cover-up step before posting, and the wall.
-- Small promo tile: 440×280 PNG (required).
+**Images** (all in `store/images/`):
+- Store icon (128×128): `store-icon-128.png`. The stamp at 96×96 with 16px clear space, per the icon guidelines.
+- Screenshots (1280×800, no alpha), in this order: `screenshot-1-stamp.png`, `screenshot-2-gallery.png`, `screenshot-3-cover-up.png`, `screenshot-4-wall.png`.
+- Small promo tile (440×280): `small-promo-440x280.png`.
+- Marquee promo tile (1400×560): `marquee-promo-1400x560.png`.
+
+The screenshots come from the real extension on made-up pages with AI-generated pictures, so no real site or person appears.
 
 ## Privacy practices tab
 
