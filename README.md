@@ -93,7 +93,7 @@ The extension has no popup, so clicking the icon goes straight to the background
 - `store/LISTING.md` — Chrome Web Store listing text, permission reasons and privacy answers.
 - `PLAN.md` — build log of what shipped and what is still waiting.
 
-## Still waiting
+## Live
 
-- A Cloudflare account and the domain pointed at it, then the steps in `cloud/DEPLOY.md`.
-- A real Chrome Web Store listing URL for the Add to Chrome link (see `store/LISTING.md`).
+- Extension: https://chromewebstore.google.com/detail/slop-stamp/cecjagoocjflopjaniepomhdcohiaopo
+- Site and wall: https://slopstamp.xyz

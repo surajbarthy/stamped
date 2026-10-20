@@ -72,6 +72,7 @@ Lets the user mark AI-generated content on web pages with a visual stamp and kee
 
 **Privacy policy URL:** https://slopstamp.xyz/privacy
 
-## After it's approved
+## Listing
 
-Replace the Add to Chrome link in `site/index.html` (currently the Chrome Web Store home page) with the listing URL, then `npm run deploy` from `cloud/`.
+Approved 2026-10-20: https://chromewebstore.google.com/detail/slop-stamp/cecjagoocjflopjaniepomhdcohiaopo
+Every Add to Chrome button on the site points here.
